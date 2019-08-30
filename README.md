@@ -49,13 +49,9 @@ _Las herramientas utilizadas en este proyecto son:_
 * [MongoDB](https://www.mongodb.com/es) - Motor de Base de Datos.
 * [ElectronJS](https://electronjs.org) - Aplicación de escritorio multiplataforma (Versión Standalone).
 
-## Contribuyendo 🖇️
-
-Por favor lee el [CONTRIBUTING.md](https://gist.github.com/villanuevand/xxxxxx) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
-
 ## Documentación 📖
 
-Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Documentación](https://github.com/tu/proyecto/wiki)
+Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Documentación](https://ivantopp.github.io/Archetypes-Editor-WOW/)
 
 ## Versionado 📌
 
