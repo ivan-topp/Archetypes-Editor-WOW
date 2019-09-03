@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeTitle } from '../actions/home';
+import FileManager from './FileManager';
 import { Button } from 'antd';
 
 class Home extends Component {
@@ -11,6 +12,7 @@ class Home extends Component {
             <div>
                 <h2>Welcome to { this.props.title }</h2>
                 <Button type="primary" onClick={()=>{this.props.handlerChangeTitle('NewTitle')}}>Change Title</Button>
+                <FileManager />
                 <Link to="/about">About</Link>
             </div>
         );

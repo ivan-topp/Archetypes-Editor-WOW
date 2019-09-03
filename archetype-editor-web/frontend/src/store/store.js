@@ -4,7 +4,12 @@ import { createStore, applyMiddleware } from 'redux';
 /* Esta constante define los valores predeterminados del estado que tendra la aplicacion al comienzo */
 
 const initialState = {
-    title: 'Title'
+    title: 'Title',
+    newTabIndex: 1,
+    files: [
+        { title: 'Tab 1', content: 'Content of Tab Pane 1', key: '0' },
+    ],
+    currentFile: '0'
 }
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
@@ -14,6 +19,43 @@ const reducer = (state, action) => {
         return {
             ...state,
             title: action.title //state.array.concat(object);
+        }
+    } else if (action.type === 'toggleFile') {
+        return{
+            ...state, 
+            currentFile: action.currentFile
+        }
+    } else if (action.type === 'addFile') {
+        const { newTabIndex } = state;
+        const file = action.file;
+        file.key = (newTabIndex + 1).toString();
+        return{
+            ...state, 
+            files: state.files.concat(file),
+            currentFile: file.key,
+            newTabIndex: newTabIndex + 1
+        }
+    } else if (action.type === 'removeFile') {
+        let { currentFile } = state;
+        let lastIndex;
+        state.files.forEach((file, indx) => {
+            if(file.key === action.target) {
+                lastIndex = indx - 1;
+            }
+        });
+        const files = state.files.filter(file => file.key !== action.target);
+        if (files.length && currentFile === action.target) {
+            if (lastIndex >= 0){
+                currentFile = files[lastIndex].key;
+            } else {
+                currentFile = files[0].key;
+            }
+            
+        } 
+        return {
+            ...state,
+            files, 
+            currentFile
         }
     }
     
