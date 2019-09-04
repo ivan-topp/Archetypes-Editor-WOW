@@ -32,6 +32,15 @@ const onEdit = (targetKey, action) => {
     
 };
 
+const changeName = (newName, key, indx) => {
+    return {
+        type: 'changeFilename',
+        key,
+        indx,
+        newName
+    };
+};
+
 /*const getCollection = () => {
     return dispatch => {
         return axios.get('http://localhost:4000/collection')
@@ -44,4 +53,4 @@ const onEdit = (targetKey, action) => {
     }
 }*/
 
-export { addFile, toggleFile, onEdit };
+export { addFile, toggleFile, onEdit, changeName };

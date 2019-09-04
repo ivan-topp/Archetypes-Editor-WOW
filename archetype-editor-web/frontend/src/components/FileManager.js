@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addFile, toggleFile, onEdit } from '../actions/FileManager';
-import { Tabs, Button } from 'antd';
+import { addFile, toggleFile, onEdit, changeName } from '../actions/FileManager';
+import { toggleOpenFileDialog } from '../actions/home';
+import { Tabs, Button, Icon, Typography } from 'antd';
+import './FileManager.css';
 const { TabPane } = Tabs;
+const { Paragraph } = Typography;
 
 class FileManager extends Component {
 
@@ -11,6 +14,9 @@ class FileManager extends Component {
         return (
             <div>
                 <h1>Bienvenido al administrador de archivos</h1>
+                <Button type="primary" onClick={() => this.props.handlerDialogOpenFile(true)}>
+                    <Icon type="upload" /> Abrir archivo
+                </Button>
                 <Tabs
                     
                     onChange={this.props.handlerToggle}
@@ -18,8 +24,8 @@ class FileManager extends Component {
                     type="editable-card"
                     onEdit={this.props.handlerEdit}
                 >
-                    {this.props.files.map(pane => (
-                        <TabPane tab={pane.title} key={pane.key}>
+                    {this.props.files.map((pane, indx) => (
+                        <TabPane tab={<div><Paragraph className="display-inline" editable={{ onChange: str=>{this.props.handlerChangeName(str, pane.key, indx, this)} }}>{pane.title}</Paragraph><a className="close" onClick={() => this.props.handlerDialogOpenFile(true)}>X</a></div>} key={pane.key}>
                             {pane.content}
                         </TabPane>
                     ))}
@@ -44,6 +50,13 @@ const mapDispatchToProps = dispatch => {
         },
         handlerEdit(targetKey, action){
             dispatch(onEdit(targetKey, action));
+        },
+        handlerDialogOpenFile(modalState) {
+            dispatch(toggleOpenFileDialog(modalState));
+        },
+        handlerChangeName(newName, key, indx, tab){
+            dispatch(changeName(newName, key, indx));
+            tab.forceUpdate();
         }
     }
 }

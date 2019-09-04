@@ -7,9 +7,10 @@ const initialState = {
     title: 'Title',
     newTabIndex: 1,
     files: [
-        { title: 'Tab 1', content: 'Content of Tab Pane 1', key: '0' },
+        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', key: '0' },
     ],
-    currentFile: '0'
+    currentFile: '0',
+    dialogOpenFile: false
 }
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
@@ -56,6 +57,18 @@ const reducer = (state, action) => {
             ...state,
             files, 
             currentFile
+        }
+    } else if (action.type === 'toggleOpenFileDialog') {
+        return {
+            ...state,
+            dialogOpenFile: action.state
+        }
+    } else if (action.type === 'changeFilename') {
+        const { files } = state;
+        files[action.indx].title = action.newName;
+        return {
+            ...state,
+            files
         }
     }
     
