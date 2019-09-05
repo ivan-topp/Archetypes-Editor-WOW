@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addFile, toggleFile, onEdit, changeName } from '../actions/FileManager';
+import { toggleFile, onEdit, changeName, removeFile } from '../actions/FileManager';
 import { toggleOpenFileDialog } from '../actions/home';
 import { Tabs, Button, Icon, Typography } from 'antd';
 import './FileManager.css';
@@ -25,7 +25,7 @@ class FileManager extends Component {
                     onEdit={this.props.handlerEdit}
                 >
                     {this.props.files.map((pane, indx) => (
-                        <TabPane tab={<div><Paragraph className="display-inline" editable={{ onChange: str=>{this.props.handlerChangeName(str, pane.key, indx, this)} }}>{pane.title}</Paragraph><a className="close" onClick={() => this.props.handlerDialogOpenFile(true)}>X</a></div>} key={pane.key}>
+                        <TabPane tab={<div><Paragraph className="display-inline" editable={{ onChange: str=>{this.props.handlerChangeName(str, pane.key, indx, this)} }}>{pane.title}</Paragraph><Icon type="close" className="close" onClick={() => this.props.handlerRemoveFile(pane.key)} /></div>} key={pane.key}>
                             {pane.content}
                         </TabPane>
                     ))}
@@ -53,6 +53,9 @@ const mapDispatchToProps = dispatch => {
         },
         handlerDialogOpenFile(modalState) {
             dispatch(toggleOpenFileDialog(modalState));
+        },
+        handlerRemoveFile(key) {
+            dispatch(removeFile(key));
         },
         handlerChangeName(newName, key, indx, tab){
             dispatch(changeName(newName, key, indx));

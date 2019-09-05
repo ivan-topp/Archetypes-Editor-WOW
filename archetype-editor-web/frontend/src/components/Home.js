@@ -6,7 +6,6 @@ import FileManager from './FileManager';
 import { Modal, Button } from 'antd';
 
 class Home extends Component {
-
     render(){
         return (
             <div>

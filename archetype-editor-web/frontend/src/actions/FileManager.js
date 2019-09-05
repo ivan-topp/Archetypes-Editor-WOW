@@ -1,15 +1,6 @@
 import React from 'react';
 //import axios from 'axios',
 
-const addFile = (indx) => {
-    const newIndx = indx + 1;
-    return {
-        type: 'addFile',
-        file: { title: 'New Tab', content: 'New Tab Pane', key: newIndx.toString() },
-        newIndx
-    };
-};
-
 const toggleFile = activeKey => {
     return {
         type: 'toggleFile',
@@ -18,12 +9,7 @@ const toggleFile = activeKey => {
 };
 
 const onEdit = (targetKey, action) => {
-    if(action === 'remove'){
-        return {
-            type: 'removeFile',
-            target: targetKey
-        };
-    } else if(action === 'add'){
+    if(action === 'add'){
         return {
             type: 'addFile',
             file: { title: 'Nuevo archivo', content: <h1>Nuevo Archivo</h1>, key: 0 }
@@ -41,6 +27,13 @@ const changeName = (newName, key, indx) => {
     };
 };
 
+const removeFile = key => {
+    return {
+        type: 'removeFile',
+        target: key
+    };
+}
+
 /*const getCollection = () => {
     return dispatch => {
         return axios.get('http://localhost:4000/collection')
@@ -53,4 +46,4 @@ const changeName = (newName, key, indx) => {
     }
 }*/
 
-export { addFile, toggleFile, onEdit, changeName };
+export { toggleFile, onEdit, changeName, removeFile };
