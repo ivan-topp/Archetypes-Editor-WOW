@@ -13,6 +13,7 @@ const toggleOpenFileDialog = modalState => {
         state: modalState
     };
 };
+
 /*const getCollection = () => {
     return dispatch => {
         return axios.get('http://localhost:4000/collection')

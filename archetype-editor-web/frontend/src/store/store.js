@@ -5,13 +5,36 @@ import { createStore, applyMiddleware } from 'redux';
 
 const initialState = {
     title: 'Title',
-    newTabIndex: 1,
+    newTabIndex: 0,
     files: [
         { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', key: '0' },
     ],
     currentFile: '0',
     dialogOpenFile: false
 }
+
+const readFile = (file) => {
+    let reader = new FileReader();
+  
+    return new Promise((resolve, reject) => {
+      reader.onload = (event) => {
+        file.data = event.target.result;
+        resolve(file);
+      };
+  
+      reader.onerror = () => {
+        return reject(this);
+      };
+  
+      if (/^image/.test(file.type)) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.readAsText(file);
+      }
+  
+    })
+  
+  };
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
 
@@ -51,8 +74,9 @@ const reducer = (state, action) => {
             } else {
                 currentFile = files[0].key;
             }
-            
-        } 
+        } else {
+            currentFile = null;
+        }
         return {
             ...state,
             files, 
@@ -69,6 +93,13 @@ const reducer = (state, action) => {
         return {
             ...state,
             files
+        }
+    } else if (action.type === 'openFile'){
+        return {
+            ...state,
+            files: action.files,
+            newTabIndex: action.newTabIndex,
+            currentFile: action.newTabIndex.toString()
         }
     }
     

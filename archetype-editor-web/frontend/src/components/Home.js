@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeTitle, toggleOpenFileDialog } from '../actions/home';
 import FileManager from './FileManager';
-import { Modal, Button } from 'antd';
+import DropZone from './DropZoneFile';
+import { Modal, Button, Icon } from 'antd';
 
 class Home extends Component {
     render(){
@@ -11,6 +12,7 @@ class Home extends Component {
             <div>
                 <h2>Welcome to { this.props.title }</h2>
                 <Button type="primary" onClick={()=>{this.props.handlerChangeTitle('NewTitle')}}>Change Title</Button>
+                <Button type="primary" onClick={()=>{this.props.handlerDownload(this.props.currentFile, this.props.files)}}><Icon type="download" />Donwload</Button>
                 <FileManager />
                 <Link to="/about">About</Link>
                 <Modal
@@ -20,9 +22,7 @@ class Home extends Component {
                     onOk={() => this.props.handlerDialogOpenFile(false)}
                     onCancel={() => this.props.handlerDialogOpenFile(false)}
                 >
-                    <p>some contents...</p>
-                    <p>some contents...</p>
-                    <p>some contents...</p>
+                    <DropZone />
                 </Modal>
             </div>
         );
@@ -32,7 +32,9 @@ class Home extends Component {
 const mapStateToProps = state => {
     return {
         title: state.title,
-        dialogOpenFile: state.dialogOpenFile
+        dialogOpenFile: state.dialogOpenFile,
+        currentFile: state.currentFile,
+        files: state.files
     };
 }
 
@@ -43,6 +45,17 @@ const mapDispatchToProps = dispatch => {
         },
         handlerDialogOpenFile(modalState) {
             dispatch(toggleOpenFileDialog(modalState));
+        },
+        handlerDownload(file, files) {
+            if (file !== null && files.length > 0){
+                const fileTarget = files.filter(ofile => ofile.key === file)[0];
+                const element = document.createElement("a");
+                const blob = new Blob([fileTarget.content], {type: 'text/plain'});
+                element.href = URL.createObjectURL(blob);
+                element.download = fileTarget.title;
+                document.body.appendChild(element); // Required for this to work in FireFox
+                element.click();
+            }
         }
     }
 }
