@@ -4,8 +4,37 @@ import { createStore, applyMiddleware } from 'redux';
 /* Esta constante define los valores predeterminados del estado que tendra la aplicacion al comienzo */
 
 const initialState = {
-    title: 'Title'
+    title: 'Title',
+    newTabIndex: 0,
+    files: [
+        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', key: '0' },
+    ],
+    currentFile: '0',
+    dialogOpenFile: false
 }
+
+const readFile = (file) => {
+    let reader = new FileReader();
+  
+    return new Promise((resolve, reject) => {
+      reader.onload = (event) => {
+        file.data = event.target.result;
+        resolve(file);
+      };
+  
+      reader.onerror = () => {
+        return reject(this);
+      };
+  
+      if (/^image/.test(file.type)) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.readAsText(file);
+      }
+  
+    })
+  
+  };
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
 
@@ -14,6 +43,63 @@ const reducer = (state, action) => {
         return {
             ...state,
             title: action.title //state.array.concat(object);
+        }
+    } else if (action.type === 'toggleFile') {
+        return{
+            ...state, 
+            currentFile: action.currentFile
+        }
+    } else if (action.type === 'addFile') {
+        const { newTabIndex } = state;
+        const file = action.file;
+        file.key = (newTabIndex + 1).toString();
+        return{
+            ...state, 
+            files: state.files.concat(file),
+            currentFile: file.key,
+            newTabIndex: newTabIndex + 1
+        }
+    } else if (action.type === 'removeFile') {
+        let { currentFile } = state;
+        let lastIndex;
+        state.files.forEach((file, indx) => {
+            if(file.key === action.target) {
+                lastIndex = indx - 1;
+            }
+        });
+        const files = state.files.filter(file => file.key !== action.target);
+        if (files.length && currentFile === action.target) {
+            if (lastIndex >= 0){
+                currentFile = files[lastIndex].key;
+            } else {
+                currentFile = files[0].key;
+            }
+        } else {
+            currentFile = null;
+        }
+        return {
+            ...state,
+            files, 
+            currentFile
+        }
+    } else if (action.type === 'toggleOpenFileDialog') {
+        return {
+            ...state,
+            dialogOpenFile: action.state
+        }
+    } else if (action.type === 'changeFilename') {
+        const { files } = state;
+        files[action.indx].title = action.newName;
+        return {
+            ...state,
+            files
+        }
+    } else if (action.type === 'openFile'){
+        return {
+            ...state,
+            files: action.files,
+            newTabIndex: action.newTabIndex,
+            currentFile: action.newTabIndex.toString()
         }
     }
     

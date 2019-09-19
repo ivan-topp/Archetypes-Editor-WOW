@@ -7,6 +7,13 @@ const changeTitle = newTitle => {
     };
 };
 
+const toggleOpenFileDialog = modalState => {
+    return {
+        type: 'toggleOpenFileDialog',
+        state: modalState
+    };
+};
+
 /*const getCollection = () => {
     return dispatch => {
         return axios.get('http://localhost:4000/collection')
@@ -19,4 +26,4 @@ const changeTitle = newTitle => {
     }
 }*/
 
-export { changeTitle };
+export { changeTitle, toggleOpenFileDialog };
