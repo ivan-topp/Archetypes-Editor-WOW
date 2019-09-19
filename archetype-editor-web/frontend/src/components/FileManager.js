@@ -18,7 +18,6 @@ class FileManager extends Component {
                     <Icon type="upload" /> Abrir archivo
                 </Button>
                 <Tabs
-                    
                     onChange={this.props.handlerToggle}
                     activeKey={this.props.currentFile}
                     type="editable-card"
