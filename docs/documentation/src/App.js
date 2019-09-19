@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Button, Icon, Input } from 'antd';
+import { Layout, Menu, Row, Icon, Input, Col } from 'antd';
 import { InfraestructuraWeb } from './sections/InfraestructuraWeb';
 import { InfraestructuraDesktop } from './sections/InfrestructuraDesktop';
 import { Comenzando } from './sections/Comenzando';
@@ -52,29 +52,15 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <Header className="header" style={{ textAlign: 'center' }}>
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={['2']}
-              style={{ lineHeight: '64px' }}
-            >
-              <Menu.Item key="1">
-                <Input.Search
-                  placeholder="input search text"
-                  style={{ width: 200 }}
-                  onSearch={value => console.log(value)}
-                />
-              </Menu.Item>
-              <Menu.Item key="2">nav 2</Menu.Item>
-              <Menu.Item key="3">nav 3</Menu.Item>
-            </Menu>
-          </Header>
-          <Layout>
-            <Sider collapsible collapsed={this.state.collapsed} onCollapse= {this.toggleCollapsed} className="side-panel">
+          <Sider 
+              trigger={null}
+              collapsible 
+              collapsed={this.state.collapsed} 
+              onCollapse= {this.toggleCollapsed} 
+              className="side-panel">
+              <div className="logo" />
               <Menu
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
+                defaultSelectedKeys={['1']} 
                 mode="inline"
                 theme="dark"
               >
@@ -94,19 +80,50 @@ class App extends Component {
                 </SubMenu>
               </Menu>
             </Sider>
-            <Content>
-              <Layout>
-                <Content>
-                  <h1 style={{ textAlign: 'center' }}>{this.state.content.title}</h1>
-                  {this.state.content.content}
-                </Content>
-              </Layout>
-              
+          <Layout>
+          <Header style={{ background: '#fff', padding: 0 }}>
+            <Row>
+              <Col span={2}>
+                <Icon
+                  className="trigger"
+                  type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                  onClick={this.toggleCollapsed}
+                />
+              </Col>
+              <Col span={22} className="menu-bar">
+                <Menu
+                theme="light"
+                mode="horizontal"
+                defaultSelectedKeys={['1']}
+                style={{ lineHeight: '64px'}}
+              >
+              <Menu.Item kay="1" disabled>
+                <Input.Search
+                  className="search"
+                  placeholder="input search text"
+                  style={{ width: 200 }}
+                  onSearch={value => console.log(value)}
+                />
+                </Menu.Item>
+              <Menu.Item key="2">nav 2</Menu.Item>
+              <Menu.Item key="3">nav 3</Menu.Item>
+            </Menu>
+              </Col>
+            </Row>
+            
+          </Header>
+            <Content
+              style={{
+                margin: '24px 16px',
+                padding: 24,
+                background: '#fff',
+                minHeight: 280,
+              }}
+            >
+              <h1 style={{ textAlign: 'center' }}>{this.state.content.title}</h1>
+              {this.state.content.content}
             </Content>
           </Layout>
-          <Footer style={{ textAlign: 'center' }}>
-            asdas
-          </Footer>
         </Layout>
         
       </div>
