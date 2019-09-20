@@ -4,7 +4,8 @@ import { createStore, applyMiddleware } from 'redux';
 /* Esta constante define los valores predeterminados del estado que tendra la aplicacion al comienzo */
 
 const initialState = {
-    title: 'Title'
+    title: 'Title',
+    electron: null
 }
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
@@ -14,6 +15,11 @@ const reducer = (state, action) => {
         return {
             ...state,
             title: action.title //state.array.concat(object);
+        }
+    }else if (action.type === "setElectron") {
+        return {
+            ...state,
+            electron: action.electron
         }
     }
     

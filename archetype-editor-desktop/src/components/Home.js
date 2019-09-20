@@ -3,12 +3,53 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeTitle } from '../actions/home';
 import { Button,Layout, Menu, Breadcrumb, Icon, Dropdown,notification} from 'antd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { func } from 'prop-types';
+import './home.css';
+import ButtonGroup from 'antd/lib/button/button-group';
 /*import Board from './Board'*/
 /*import Card from './Cards'*/
+
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider} = Layout;
-const ButtonGroup = Button.Group;
 
+//----------InicioDrag and drop---------------
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+  padding: grid * 2,
+  margin: `0 ${grid}px 0 0`,
+
+  // change background colour if dragging
+  background: isDragging ? 'lightgreen' : 'grey',
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  display: 'flex',
+  padding: grid,
+  overflow: 'auto',
+});
+//----------finDrag and drop---------------
+var winclose = function () {
+    window.close();
+}
+var winmin = function(){
+    window.minimize();
+}
 
 const NotificationSave = () => {
     notification.open({
@@ -17,6 +58,7 @@ const NotificationSave = () => {
         'Su archivo esta esta en su sistema.',
     });
 };
+
 const MenuFile = (
     <Menu theme="dark">
         <Menu theme="dark">
@@ -60,42 +102,81 @@ class Home extends Component {
     constructor(props){
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = {collapsed:false};
-}
+        this.state = {collapsed:false,
+            items: getItemStyle(6),
+        };
+        this.handlerWindowClose = this.handlerWindowClose.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
+    }
+    onDragEnd(result) {
+    // dropped outside the list
+        if (!result.destination) {
+        return;
+        }
+
+        const items = reorder(
+        this.state.items,
+        result.source.index,
+        result.destination.index
+        );
+
+        this.setState({
+        items,
+        });
+    }
+    handlerWindowClose(event) {
+        event.preventDefault();
+        const { ipcRenderer } = this.props.app.electron;
+        ipcRenderer.send('mainWindow:close');
+        event.stopPropagation();
+    }
     toggle() {
         this.setState(state => ({ collapse: !state.collapse }));
     }
     render(){
         return (
             <div>
-                <h2>Welcome to { this.props.title }</h2>
-                <Button type="primary" onClick={()=>{this.props.handlerChangeTitle('NewTitle')}}>Change Title</Button>
-                <Link to="/about">About</Link>
-                <Layout >
-                    <Menu theme="dark" mode="inline">
-                        <Icon type="fire" />
-                        <Dropdown overlay={MenuFile} trigger={['click']}>
-                            <Button type="link" ghost>
-                                File
-                            </Button>
-                        </Dropdown>
+                <Layout id="baraction">
+                    <Menu theme="dark" mode="inline" >
+                        <ButtonGroup id="nomove1">
+                            <Icon type="fire" />
+                            <Dropdown overlay={MenuFile} trigger={['click']}>
+                                <Button type="link" ghost>
+                                    File
+                                </Button>
+                            </Dropdown>
+                            
+                            <Dropdown overlay={MenuEdit} trigger={['click']}>
+                                <Button type="link" ghost >
+                                    Edit
+                                </Button>
+                            </Dropdown>
+                            
+                            <Dropdown overlay={MenuSelection} trigger={['click']}>
+                                <Button type="link" ghost>
+                                    Selection
+                                </Button>
+                            </Dropdown>
+                            <Dropdown overlay={MenuHelp} trigger={['click']}>
+                                <Button type="link" ghost>
+                                    Help
+                                </Button>
+                            </Dropdown>
+                        </ButtonGroup>
                         
-                        <Dropdown overlay={MenuEdit} trigger={['click']}>
-                            <Button type="link" ghost>
-                                Edit
+                        <ButtonGroup id="buttongroup">
+                            <Button type="link" ghost  id="minimize">
+                                    <svg aria-hidden="true" version="1.1" width="10" height="10">
+                                    <path fill="currentColor" d="M 0,5 10,5 10,6 0,6 Z" />
+                                    </svg>
                             </Button>
-                        </Dropdown>
-                        
-                        <Dropdown overlay={MenuSelection} trigger={['click']}>
-                            <Button type="link" ghost>
-                                Selection
+                            <Button type="link" id="maximize">
+                                ❐
                             </Button>
-                        </Dropdown>
-                        <Dropdown overlay={MenuHelp} trigger={['click']}>
-                            <Button type="link" ghost>
-                                Help
+                            <Button type="danger" onClick={winclose}>
+                                    x
                             </Button>
-                        </Dropdown>
+                        </ButtonGroup>
                     </Menu>
                 </Layout>
                 
@@ -181,7 +262,8 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     return {
-        title: state.title
+        title: state.title,
+        electron: state.electron
     };
 }
 
