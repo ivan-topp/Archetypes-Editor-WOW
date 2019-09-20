@@ -7,34 +7,12 @@ const initialState = {
     title: 'Title',
     newTabIndex: 0,
     files: [
-        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', key: '0' },
+        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', path:'', saved: false, key: '0' },
     ],
     currentFile: '0',
-    dialogOpenFile: false
+    dialogOpenFile: false,
+    electron: null
 }
-
-const readFile = (file) => {
-    let reader = new FileReader();
-  
-    return new Promise((resolve, reject) => {
-      reader.onload = (event) => {
-        file.data = event.target.result;
-        resolve(file);
-      };
-  
-      reader.onerror = () => {
-        return reject(this);
-      };
-  
-      if (/^image/.test(file.type)) {
-        reader.readAsDataURL(file);
-      } else {
-        reader.readAsText(file);
-      }
-  
-    })
-  
-  };
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
 
@@ -53,6 +31,8 @@ const reducer = (state, action) => {
         const { newTabIndex } = state;
         const file = action.file;
         file.key = (newTabIndex + 1).toString();
+        file.saved = false;
+        file.path = '';
         return{
             ...state, 
             files: state.files.concat(file),
@@ -100,6 +80,18 @@ const reducer = (state, action) => {
             files: action.files,
             newTabIndex: action.newTabIndex,
             currentFile: action.newTabIndex.toString()
+        }
+    } else if (action.type === 'saved') {
+        const { files } = state;
+        files[files.indexOf(action.file)].saved = true;
+        return {
+            ...state,
+            files
+        }
+    } else if (action.type === "setElectron") {
+        return {
+            ...state,
+            electron: action.electron
         }
     }
     

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { changeTitle, toggleOpenFileDialog } from '../actions/home';
+import { changeTitle, toggleOpenFileDialog, handlerDownload } from '../actions/home';
 import FileManager from './FileManager';
 import DropZone from './DropZoneFile';
 import { Modal, Button, Icon } from 'antd';
@@ -12,7 +12,7 @@ class Home extends Component {
             <div>
                 <h2>Welcome to { this.props.title }</h2>
                 <Button type="primary" onClick={()=>{this.props.handlerChangeTitle('NewTitle')}}>Change Title</Button>
-                <Button type="primary" onClick={()=>{this.props.handlerDownload(this.props.currentFile, this.props.files)}}><Icon type="download" />Donwload</Button>
+                <Button type="primary" onClick={()=>{this.props.handlerDownloadFile(this.props.electron.ipcRenderer, this.props.currentFile, this.props.files)}}><Icon type="download" />Donwload</Button>
                 <FileManager />
                 <Link to="/about">About</Link>
                 <Modal
@@ -34,7 +34,8 @@ const mapStateToProps = state => {
         title: state.title,
         dialogOpenFile: state.dialogOpenFile,
         currentFile: state.currentFile,
-        files: state.files
+        files: state.files,
+        electron: state.electron
     };
 }
 
@@ -46,17 +47,9 @@ const mapDispatchToProps = dispatch => {
         handlerDialogOpenFile(modalState) {
             dispatch(toggleOpenFileDialog(modalState));
         },
-        handlerDownload(file, files) {
-            if (file !== null && files.length > 0){
-                const fileTarget = files.filter(ofile => ofile.key === file)[0];
-                const element = document.createElement("a");
-                const blob = new Blob([fileTarget.content], {type: 'text/plain'});
-                element.href = URL.createObjectURL(blob);
-                element.download = fileTarget.title;
-                document.body.appendChild(element); // Required for this to work in FireFox
-                element.click();
-            }
-        }
+        handlerDownloadFile(ipc, file, files) {
+            handlerDownload(ipc, file, files);
+        }   
     }
 }
 

@@ -5,3 +5,6 @@
 .display-inline{
     display: inline;
 }
+.tab-content{
+    height: 100vh;
+}

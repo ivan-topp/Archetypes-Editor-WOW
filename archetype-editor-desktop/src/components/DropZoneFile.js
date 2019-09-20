@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { openFile } from '../actions/DropZoneFile';
+import { toggleOpenFileDialog } from '../actions/home';
+import { feedBackMessage } from '../actions/others';
 import { Icon } from 'antd';
 import './DropZoneFile.css'
 
@@ -17,15 +19,19 @@ class Dropzone extends Component {
     this.onDrop = this.onDrop.bind(this)
   }
 
-  openFileDialog() {
-    if (this.props.disabled) return;
+  openFileDialog(e) {
+    //this.props.electron.ipcRenderer.send('fs:open');
+    /*if (this.props.disabled) return;*/
+    //console.log(e);
     this.fileInputRef.current.click();
   }
 
   onFilesAdded(evt) {
     if (this.props.disabled) return;
     const files = evt.target.files;
+    
     const aFiles = this.fileListToArray(files);
+    console.log(aFiles[0]);
     if(aFiles.length > 0){
         this.props.handlerAddFiles(aFiles, this.props.newTabIndex, this.props.files, this.fileInputRef);
     }
@@ -88,7 +94,8 @@ class Dropzone extends Component {
 const mapStateToProps = state => {
     return{
         newTabIndex: state.newTabIndex,
-        files: state.files
+        files: state.files,
+        electron: state.electron
     };
 }
 
@@ -96,24 +103,36 @@ const mapDispatchToProps = dispatch => {
     return {
         handlerAddFiles(aFiles, newTabIndex, files, ref) {
             if (window.FileReader) {
-                aFiles.forEach(file => {
-                    const ext = file.name.split('.').pop();
-                    if (ext === 'adl' || ext === 'json' || ext === 'xml' ) {
-                        // validar que no exista archivo con el mismo nombre aqui
-                        const reader = new FileReader();
-                        const nFile = { title: '', content: '', key: '0' };
-                        nFile.key = (newTabIndex + 1).toString();
-                        newTabIndex+=1;
-                        nFile.title = file.name;
-                        reader.onload = (r)=>{
-                            nFile.content = r.target.result;
-                            files = files.concat(nFile);
-                            dispatch(openFile(files, newTabIndex));
-                        }
-                        reader.readAsText(file, 'UTF-8');
+              aFiles.forEach(file => {
+                try {
+                  const ext = file.name.split('.').pop();
+                  if (ext === 'adl' || ext === 'json' || ext === 'xml' ) {
+                    const equalFiles = files.filter(ofile => ofile.title === file.name);
+                    if (equalFiles.length <= 0) {
+                      const reader = new FileReader();
+                      const nFile = { title: '', content: '', path:'', saved: false, key: '0' };
+                      nFile.key = (newTabIndex + 1).toString();
+                      newTabIndex+=1;
+                      nFile.title = file.name;
+                      nFile.path = file.path;
+                      reader.onload = (r)=>{
+                        nFile.content = r.target.result;
+                        files = files.concat(nFile);
+                        dispatch(openFile(files, newTabIndex));
+                      }
+                      reader.readAsText(file, 'UTF-8');
+                      feedBackMessage({ type: "success", msg: "El archivo " + file.name + " se cargó correctamente."});
+                    } else {
+                      feedBackMessage({ type: "warning", msg: "El archivo " + file.name + " no se cargó debido a que ya se encuentra en uso."});
                     }
-                });
-                ref.current.value = null;
+                  }
+                } catch (error) {
+                  feedBackMessage({ type: "error", msg: "El archivo " + file.name + " no se pudo cargar."});
+                  console.log(error);
+                }
+              });
+              ref.current.value = null;
+              dispatch(toggleOpenFileDialog(false));
             }
         }
     }
