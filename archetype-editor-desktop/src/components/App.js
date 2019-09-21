@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Home from './Home';
 import { connect } from 'react-redux';
-const { $, electron } = window;
+const { electron } = window;
 
 //import { DatePicker } from 'antd';
 
@@ -13,27 +13,15 @@ class App extends Component {
     super(props);
         
     this.state = {
-      sidebar: true,
-      app: {
-        isMaximized: false,
-        set: function (state, callback) {
-          const { set, electron, ...app } = this.state.app;
-          this.setState(
-            {
-              app: { ...app, ...state, set, electron }
-            },
-            callback
-          )
-        }.bind(this),
-        electron,
-      }
+      isMaximized:false,
+      } 
     } 
-  }
+  
   componentWillMount(){
     this.props.setElectron(electron);
-    const { ipcRenderer } = this.state.app.electron;
+    const { ipcRenderer } = electron;
     ipcRenderer.on('mainWindow:isMaximized', (event, isMaximized) => {
-      this.state.app.set({ isMaximized });
+      this.setState({ isMaximized });
     });
     ipcRenderer.send('mainWindow:isMaximized');
    }
@@ -49,7 +37,6 @@ class App extends Component {
 }
 const mapStateToProps = state => {
   return {
-    
       electron: state.electron
   };
 }

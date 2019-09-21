@@ -5,14 +5,10 @@ import { changeTitle } from '../actions/home';
 import { Button,Layout, Menu, Breadcrumb, Icon, Dropdown,notification} from 'antd';
 import { func } from 'prop-types';
 import './home.css';
-
 import ButtonGroup from 'antd/lib/button/button-group';
-
-const { electron } = window;
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider} = Layout;
-var maximized1=true;
-
+var Maximize=true;
 const NotificationSave = () => {
     notification.open({
       message: 'Se ha Guardado correctamente',
@@ -73,34 +69,34 @@ class Home extends Component {
     
     handlerWindowMinimize(event) {
         event.preventDefault();
-        const { ipcRenderer } = electron;
+        const { ipcRenderer } = this.props.electron;
         ipcRenderer.send('mainWindow:minimize');
         event.stopPropagation();
     }
     handlerWindowClose(event) {
-        const { ipcRenderer } = electron;
+        const { ipcRenderer } = this.props.electron;
         event.preventDefault();
         ipcRenderer.send('mainWindow:close');
         event.stopPropagation();
     }
     handlerWindowMaximize(event) {
         event.preventDefault();
-        const { ipcRenderer } = electron;
+        const { ipcRenderer } = this.props.electron;
         ipcRenderer.send('mainWindow:maximize');
-        if(maximized1===true){
-            maximized1=false;
-            console.log(maximized1); 
+        if(Maximize===true){
+            Maximize=false;
+            console.log(Maximize); 
         }
         event.stopPropagation();
     }   
     handlerWindowRestore(event) {
         event.preventDefault();
-        const { ipcRenderer } = electron;
+        const { ipcRenderer } = this.props.electron;
         ipcRenderer.send('mainWindow:restore');
         
-        if(maximized1===false){
-            maximized1=true;
-            console.log(maximized1);
+        if(Maximize===false){
+            Maximize=true;
+            console.log(Maximize);
         }
         event.stopPropagation();
         
@@ -146,7 +142,7 @@ class Home extends Component {
                                     <path fill="currentColor" d="M 0,5 10,5 10,6 0,6 Z" />
                                     </svg>
                             </Button>
-                            {maximized1===true ?  (
+                            {Maximize===true ?  (
                                 <Button type="link" ghost onClick={this.handlerWindowMaximize}>
                                     ❐
                                 </Button>
