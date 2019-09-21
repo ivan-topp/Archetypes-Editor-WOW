@@ -3,53 +3,15 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeTitle } from '../actions/home';
 import { Button,Layout, Menu, Breadcrumb, Icon, Dropdown,notification} from 'antd';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { func } from 'prop-types';
 import './home.css';
-import ButtonGroup from 'antd/lib/button/button-group';
-/*import Board from './Board'*/
-/*import Card from './Cards'*/
 
+import ButtonGroup from 'antd/lib/button/button-group';
+
+const { electron } = window;
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider} = Layout;
-
-//----------InicioDrag and drop---------------
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
-const grid = 8;
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
-  padding: grid * 2,
-  margin: `0 ${grid}px 0 0`,
-
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
-
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
-
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-  display: 'flex',
-  padding: grid,
-  overflow: 'auto',
-});
-//----------finDrag and drop---------------
-var winclose = function () {
-    window.close();
-}
-var winmin = function(){
-    window.minimize();
-}
+var maximized1=true;
 
 const NotificationSave = () => {
     notification.open({
@@ -58,7 +20,6 @@ const NotificationSave = () => {
         'Su archivo esta esta en su sistema.',
     });
 };
-
 const MenuFile = (
     <Menu theme="dark">
         <Menu theme="dark">
@@ -66,7 +27,7 @@ const MenuFile = (
             <Menu.Item key="opfile">OpenFile</Menu.Item>
             <Menu.Item key="svsave"  onClick={NotificationSave}>Save</Menu.Item>
             <Menu.Item key="svsaveas">Save As</Menu.Item>
-            <Menu.Item key="quit">Exit</Menu.Item>
+            <Menu.Item key="quit" >Exit </Menu.Item>
        </Menu>
     </Menu>
 );
@@ -102,41 +63,55 @@ class Home extends Component {
     constructor(props){
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = {collapsed:false,
-            items: getItemStyle(6),
-        };
         this.handlerWindowClose = this.handlerWindowClose.bind(this);
-        this.onDragEnd = this.onDragEnd.bind(this);
-    }
-    onDragEnd(result) {
-    // dropped outside the list
-        if (!result.destination) {
-        return;
+        this.handlerWindowMinimize = this.handlerWindowMinimize.bind(this);
+        this.handlerWindowMaximize = this.handlerWindowMaximize.bind(this);
+        this.handlerWindowRestore = this.handlerWindowRestore.bind(this);
+        this.state = {collapsed:false,
         }
-
-        const items = reorder(
-        this.state.items,
-        result.source.index,
-        result.destination.index
-        );
-
-        this.setState({
-        items,
-        });
+    }
+    
+    handlerWindowMinimize(event) {
+        event.preventDefault();
+        const { ipcRenderer } = electron;
+        ipcRenderer.send('mainWindow:minimize');
+        event.stopPropagation();
     }
     handlerWindowClose(event) {
+        const { ipcRenderer } = electron;
         event.preventDefault();
-        const { ipcRenderer } = this.props.app.electron;
         ipcRenderer.send('mainWindow:close');
         event.stopPropagation();
+    }
+    handlerWindowMaximize(event) {
+        event.preventDefault();
+        const { ipcRenderer } = electron;
+        ipcRenderer.send('mainWindow:maximize');
+        if(maximized1===true){
+            maximized1=false;
+            console.log(maximized1); 
+        }
+        event.stopPropagation();
+    }   
+    handlerWindowRestore(event) {
+        event.preventDefault();
+        const { ipcRenderer } = electron;
+        ipcRenderer.send('mainWindow:restore');
+        
+        if(maximized1===false){
+            maximized1=true;
+            console.log(maximized1);
+        }
+        event.stopPropagation();
+        
     }
     toggle() {
         this.setState(state => ({ collapse: !state.collapse }));
     }
     render(){
         return (
-            <div>
-                <Layout id="baraction">
+            <div >
+                <Layout id="baraction" >
                     <Menu theme="dark" mode="inline" >
                         <ButtonGroup id="nomove1">
                             <Icon type="fire" />
@@ -144,6 +119,7 @@ class Home extends Component {
                                 <Button type="link" ghost>
                                     File
                                 </Button>
+                                
                             </Dropdown>
                             
                             <Dropdown overlay={MenuEdit} trigger={['click']}>
@@ -165,17 +141,28 @@ class Home extends Component {
                         </ButtonGroup>
                         
                         <ButtonGroup id="buttongroup">
-                            <Button type="link" ghost  id="minimize">
+                            <Button type="link" ghost  onClick={this.handlerWindowMinimize}>
                                     <svg aria-hidden="true" version="1.1" width="10" height="10">
                                     <path fill="currentColor" d="M 0,5 10,5 10,6 0,6 Z" />
                                     </svg>
                             </Button>
-                            <Button type="link" id="maximize">
+                            {maximized1===true ?  (
+                                <Button type="link" ghost onClick={this.handlerWindowMaximize}>
+                                    ❐
+                                </Button>
+                                 
+                            ) : (
+                                <Button type="link" ghost onClick={this.handlerWindowRestore} >
                                 ❐
-                            </Button>
-                            <Button type="danger" onClick={winclose}>
+                                </Button>
+                            )}
+                            
+                            <Button type="danger" onClick={this.handlerWindowClose}>
                                     x
                             </Button>
+                            
+                            
+                            
                         </ButtonGroup>
                     </Menu>
                 </Layout>
@@ -272,6 +259,7 @@ const mapDispatchToProps = dispatch => {
         handlerChangeTitle(newtitle) {
             dispatch(changeTitle(newtitle));
         }
+        
     }
 }
 

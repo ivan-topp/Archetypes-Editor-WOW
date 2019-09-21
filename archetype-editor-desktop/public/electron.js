@@ -43,6 +43,25 @@ app.on('activate', () => {
   }
 });
 
+ipcMain.on('mainWindow:minimize', () => {
+  mainWindow.minimize();
+});
 
+ipcMain.on('mainWindow:close', () => {
+  mainWindow.close();
+});
 
+ipcMain.on('mainWindow:isMaximized', () => {
+  mainWindow.webContents.send('mainWindow:isMaximized', mainWindow.isMaximized());
+});
+
+ipcMain.on('mainWindow:maximize', () => {
+  mainWindow.maximize();
+  mainWindow.webContents.send('mainWindow:isMaximized', true);
+});
+
+ipcMain.on('mainWindow:restore', () => {
+  mainWindow.restore();
+  mainWindow.webContents.send('mainWindow:isMaximized', false);
+});
 
