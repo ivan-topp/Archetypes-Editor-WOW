@@ -1,0 +1,14 @@
+.close{
+    margin-left: 5px;
+    display: inline;
+}
+.display-inline{
+    display: inline;
+}
+.tab-content{
+    height: 100vh;
+    background-color: white;
+}
+.file-manager{
+    background-color: white;
+}
