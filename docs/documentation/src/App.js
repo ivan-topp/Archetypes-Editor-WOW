@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Row, Icon, Input, Col } from 'antd';
+import { Layout, Menu, Row, Icon, Input, Col, Typography } from 'antd';
 import { InfraestructuraWeb } from './sections/InfraestructuraWeb';
 import { InfraestructuraDesktop } from './sections/InfrestructuraDesktop';
 import { Comenzando } from './sections/Comenzando';
 import { AdministradorDeArchivos } from './sections/FileManager';
+import { DropZoneFile } from './sections/DropZoneFile';
 import './App.css';
 import 'antd/dist/antd.css';
-
+const { Title } = Typography;
 const { SubMenu } = Menu;
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 class App extends Component {
   constructor(props){
@@ -25,7 +26,6 @@ class App extends Component {
     });
   }
   toggleContent = (event) => {
-    //event.preventDefault();
     console.log(event.item.props.children.length);
     if (event.item.props.children.length === 2) {
       if (event.item.props.children[1].props.children === "Comenzando") {
@@ -44,6 +44,10 @@ class App extends Component {
     } else if (event.item.props.children === "Administrador de Archivos") {
       this.setState({
         content: AdministradorDeArchivos
+      });
+    }  else if (event.item.props.children === "Cargador de archivos") {
+      this.setState({
+        content: DropZoneFile
       });
     }
   }
@@ -74,7 +78,7 @@ class App extends Component {
                 </SubMenu>
                 <SubMenu key="sub2" title={<span><Icon type="mail" /><span>Componentes</span></span>}>
                   <Menu.Item key="5" onClick={this.toggleContent}>Administrador de Archivos</Menu.Item>
-                  <Menu.Item key="6">Componente 2</Menu.Item>
+                  <Menu.Item key="6" onClick={this.toggleContent}>Cargador de archivos</Menu.Item>
                   <Menu.Item key="7">Componente 3</Menu.Item>
                   <Menu.Item key="8">Componente 4</Menu.Item>
                 </SubMenu>
@@ -120,7 +124,7 @@ class App extends Component {
                 minHeight: 280,
               }}
             >
-              <h1 style={{ textAlign: 'center' }}>{this.state.content.title}</h1>
+              <Title style={{ textAlign: 'center' }}>{this.state.content.title}</Title>
               {this.state.content.content}
             </Content>
           </Layout>
