@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { toggleFile, onEdit, changeName, removeFile } from '../actions/FileManager';
 import { toggleOpenFileDialog, handlerDownload, saveFile } from '../actions/home';
 import { feedBackMessage } from '../actions/others';
-import { Tabs, Button, Icon, Typography, Modal } from 'antd';
+import { Tabs, Icon, Typography, Modal } from 'antd';
 import './FileManager.css';
 const { TabPane } = Tabs;
 const { Paragraph } = Typography;
@@ -35,11 +35,7 @@ class FileManager extends Component {
 
     render(){
         return (
-            <div>
-                <h1>Bienvenido al administrador de archivos</h1>
-                <Button type="primary" onClick={() => this.props.handlerDialogOpenFile(true)}>
-                    <Icon type="upload" /> Abrir archivo
-                </Button>
+            <div className="file-manager">
                 <Tabs ref="TabPanel"
                     onChange={this.props.handlerToggle}
                     activeKey={this.props.currentFile}
@@ -77,7 +73,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleFile(activeKey));
         },
         handlerEdit(targetKey, action){
-            dispatch(onEdit(targetKey, action));
+            dispatch(onEdit(action));
         },
         handlerDialogOpenFile(modalState) {
             dispatch(toggleOpenFileDialog(modalState));

@@ -46,7 +46,7 @@ const reducer = (state, action) => {
             }
         });
         const files = state.files.filter(file => file.key !== action.target);
-        if (files.length && currentFile === action.target) {
+        if (files.length) {
             if (lastIndex >= 0){
                 currentFile = files[lastIndex].key;
             } else {

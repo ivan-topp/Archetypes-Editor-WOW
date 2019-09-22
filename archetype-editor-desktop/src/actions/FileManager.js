@@ -8,7 +8,7 @@ const toggleFile = activeKey => {
     };
 };
 
-const onEdit = (targetKey, action) => {
+const onEdit = (action) => {
     if(action === 'add'){
         return {
             type: 'addFile',

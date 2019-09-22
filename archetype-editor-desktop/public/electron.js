@@ -10,7 +10,7 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
     minWidth: 800,
     minHeight: 600,
@@ -19,6 +19,7 @@ function createWindow() {
         preload: path.join(__dirname, 'preload.js')
     }
   });
+  mainWindow.openDevTools();
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '..', 'build', 'index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
   mainWindow.on('resize', () => {
@@ -83,3 +84,25 @@ ipcMain.on('fs:saveas', (event, filename, data, key, closeTab, fileTarget) => {
       }
   );
 });
+ipcMain.on('mainWindow:minimize', () => {
+  mainWindow.minimize();
+});
+
+ipcMain.on('mainWindow:close', () => {
+  mainWindow.close();
+});
+
+ipcMain.on('mainWindow:isMaximized', () => {
+  mainWindow.webContents.send('mainWindow:isMaximized', mainWindow.isMaximized());
+});
+
+ipcMain.on('mainWindow:maximize', () => {
+  mainWindow.maximize();
+  mainWindow.webContents.send('mainWindow:isMaximized', true);
+});
+
+ipcMain.on('mainWindow:restore', () => {
+  mainWindow.restore();
+  mainWindow.webContents.send('mainWindow:isMaximized', false);
+});
+

@@ -9,12 +9,24 @@ const { electron } = window;
 const About = () => <h2>About</h2>;
 
 class App extends Component {
-
+  constructor(props) {
+    super(props);
+        
+    this.state = {
+      isMaximized:false,
+      } 
+    } 
+  
   componentWillMount(){
     this.props.setElectron(electron);
-  }
-
-  render(){
+    const { ipcRenderer } = electron;
+    ipcRenderer.on('mainWindow:isMaximized', (event, isMaximized) => {
+      this.setState({ isMaximized });
+    });
+    ipcRenderer.send('mainWindow:isMaximized');
+   }
+  
+   render(){
     return (
       <BrowserRouter>
         <Route exact path="/" component={ Home } />

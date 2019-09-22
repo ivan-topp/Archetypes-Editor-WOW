@@ -41,6 +41,22 @@ const handlerDownload = (ipcRenderer, file, files, closeTab=null) => {
     }
 }
 
+const handlerSaveAs = (ipcRenderer, file, files, closeTab=null) => {
+    if (file !== null && files.length > 0){
+        try {
+            const fileTarget = files.filter(ofile => ofile.key === file)[0];
+            ipcRenderer.send('fs:saveas', fileTarget.title, fileTarget.content, file, closeTab, fileTarget);
+
+        } catch (error) {
+            if (closeTab === null) {
+                feedBackMessage({ type: "error", msg: "El archivo " + file.title + " no se pudo guardar."});
+                console.log(error);
+            }
+        }
+        
+    }
+}
+
 /*const getCollection = () => {
     return dispatch => {
         return axios.get('http://localhost:4000/collection')
@@ -53,4 +69,4 @@ const handlerDownload = (ipcRenderer, file, files, closeTab=null) => {
     }
 }*/
 
-export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload };
+export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload, handlerSaveAs };
