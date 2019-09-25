@@ -55,7 +55,7 @@ class App extends Component {
       this.setState({
         content: Homepage
       });
-    }else if (event.item.props.children === "Appini"){
+    }else if (event.item.props.children === "App"){
       this.setState({
         content: Appini
       });
@@ -90,7 +90,7 @@ class App extends Component {
                   <Menu.Item key="5" onClick={this.toggleContent}>Administrador de Archivos</Menu.Item>
                   <Menu.Item key="6" onClick={this.toggleContent}>Cargador de archivos</Menu.Item>
                   <Menu.Item key="7" onClick={this.toggleContent}>Homepage</Menu.Item>
-                  <Menu.Item key="8" onClick={this.toggleContent}>Appini</Menu.Item>
+                  <Menu.Item key="8" onClick={this.toggleContent}>App</Menu.Item>
                 </SubMenu>
               </Menu>
             </Sider>
