@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openFile } from '../actions/DropZoneFile';
 import { toggleOpenFileDialog } from '../actions/home';
 import { feedBackMessage } from '../actions/others';
 import { Icon } from 'antd';
-import './DropZoneFile.css'
+import './DropZoneFile.css';
 
 class Dropzone extends Component {
   constructor(props) {
@@ -116,9 +116,57 @@ const mapDispatchToProps = dispatch => {
                       nFile.title = file.name;
                       nFile.path = file.path;
                       reader.onload = (r)=>{
-                        nFile.content = r.target.result;
+                        if(ext === 'xml'){
+                          var xmlDoc = null;
+                          if(window.DOMParser){
+                            var parser1 = new DOMParser();
+                            xmlDoc = parser1.parseFromString(r.target.result, "text/xml");
+                          }
+                          else{
+                            
+                            xmlDoc.async = false;
+                            xmlDoc.loadXML(r.target.result);
+                            xmlDoc = xmlDoc.loadXML;
+                          }
+                          function xml2json(xml) {
+                            try {
+                              var obj = {};
+                              if (xml.children.length > 0) {
+                                for (var i = 0; i < xml.children.length; i++) {
+                                  var item = xml.children.item(i);
+                                  var nodeName = item.nodeName;
+
+                                  if (typeof (obj[nodeName]) == "undefined") {
+                                    obj[nodeName] = xml2json(item);
+                                  } else {
+                                    if (typeof (obj[nodeName].push) == "undefined") {
+                                      var old = obj[nodeName];
+
+                                      obj[nodeName] = [];
+                                      obj[nodeName].push(old);
+                                    }
+                                    obj[nodeName].push(xml2json(item));
+                                  }
+                                }
+                              } else {
+                                obj = xml.textContent;
+                              }
+                              return obj;
+                            } catch (e) {
+                                console.log(e.message);
+                            }
+                          }
+                          var json = xml2json(xmlDoc); 
+                          var json2 = JSON.stringify(json);
+                          nFile.content = json2;
+                          
+                        }
+                        else{
+                            nFile.content = r.target.result;
+                        }
                         files = files.concat(nFile);
-                        dispatch(openFile(files, newTabIndex));
+                        dispatch(openFile(files,newTabIndex));
+                        
                       }
                       reader.readAsText(file, 'UTF-8');
                       feedBackMessage({ type: "success", msg: "El archivo " + file.name + " se cargó correctamente."});
