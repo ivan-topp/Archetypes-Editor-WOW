@@ -46,7 +46,7 @@ const tablaDropZoneFile = [
     }
 ];
 export const Appini = {
-    "title": "Lo que inicia primero",
+    "title": "La Aplicación React",
     "content": (
         <div>
             <Title level={2}>El componenete "App.js".</Title>
