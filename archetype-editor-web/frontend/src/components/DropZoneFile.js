@@ -5,7 +5,6 @@ import { toggleOpenFileDialog } from '../actions/home';
 import { feedBackMessage } from '../actions/others';
 import { Icon, message } from 'antd';
 import './DropZoneFile.css';
-import parser from 'xml2js';
 
 class Dropzone extends Component {
   constructor(props) {

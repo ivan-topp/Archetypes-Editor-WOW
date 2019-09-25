@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openFile } from '../actions/DropZoneFile';
 import { toggleOpenFileDialog } from '../actions/home';
 import { feedBackMessage } from '../actions/others';
 import { Icon } from 'antd';
-import './DropZoneFile.css'
-import parser from 'xml2js'
+import './DropZoneFile.css';
 
 class Dropzone extends Component {
   constructor(props) {
