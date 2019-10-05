@@ -8,6 +8,24 @@ const changeTitle = newTitle => {
     };
 };
 
+const openDbArchetype = (archetype) => {
+    const file = { title: archetype.archetype_id.value, content: {
+        adl_version: archetype.adl_version,
+        archetype_id: archetype.archetype_id,
+        concept: archetype.concept,
+        definition: archetype.definition,
+        description: archetype.description,
+        is_controlled: archetype.is_controlled,
+        ontology: archetype.ontology,
+        original_language: archetype.original_language,
+        uid: archetype.uid
+    }, saved: false, key: '0', _id: archetype._id };
+    return {
+        type: "addFile", 
+        file
+    };
+}
+
 const toggleOpenFileDialog = modalState => {
     return {
         type: 'toggleOpenFileDialog',
@@ -26,32 +44,25 @@ const handlerDownload = (dispatch, file, files) => {
     if (file !== null && files.length > 0){
         try {
             const fileTarget = files.filter(ofile => ofile.key === file)[0];
+            const filename = fileTarget.title.substr(0, fileTarget.title.lastIndexOf('.'));
             const element = document.createElement("a");
-            const blob = new Blob([fileTarget.content], {type: 'text/plain'});
+            const blob = new Blob([JSON.stringify(fileTarget.content)], {type: 'text/plain'});
             element.href = URL.createObjectURL(blob);
-            element.download = fileTarget.title;
+            if(filename !== ''){
+                element.download = filename + ".json";
+            }else{
+                element.download = fileTarget.title + ".json";
+            }
             document.body.appendChild(element); // Required for this to work in FireFox
             element.click();
             dispatch(saveFile(fileTarget));
             feedBackMessage({ type: "success", msg: "El archivo " + fileTarget.title + " se ha descargado correctamente."});
         } catch (error) {
-            feedBackMessage({ type: "error", msg: "El archivo " + file.title + " no se pudo cargar."});
+            feedBackMessage({ type: "error", msg: "El archivo " + file.title + " no se pudo descargar."});
             console.log(error);
         }
         
     }
 }
 
-/*const getCollection = () => {
-    return dispatch => {
-        return axios.get('http://localhost:4000/collection')
-            .then(response => {
-                dispatch({
-                    type: 'protocol-type',
-                    data: response.data
-                });
-            });
-    }
-}*/
-
-export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload };
+export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload, openDbArchetype };

@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
+const cors = require('cors');
 
 //Initializations
 
@@ -14,14 +15,16 @@ require('./db');
 app.set('port', process.env.PORT || 4000);
 
 //Middlewares
-
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+
 //Routes
 
 app.use('/api/collections', require('./routes/collection'));
+app.use('/api/archetype', require('./routes/archetype'));
 
 //Static Files
 

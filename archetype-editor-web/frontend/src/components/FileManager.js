@@ -26,7 +26,7 @@ class FileManager extends Component {
                                 </Paragraph>
                                 <Icon type="close" className="close" onClick={(e)=>{this.props.showConfirm(e, this.props.currentFile, this.props.files)}}/>
                             </div>} key={pane.key}>
-                            {pane.content}
+                            {JSON.stringify(pane.content)}
                         </TabPane>
                     ))}
                 </Tabs>
@@ -59,6 +59,8 @@ const mapDispatchToProps = dispatch => {
             confirm({
                 title: 'Cuidado!',
                 content: 'Haz realizado cambios en el archivo, ¿Deseas descargar el archivo antes de cerrarlo?',
+                okText: "Si, guardar cambios",
+                cancelText: "No",
                 onOk() {
                     const fileTarget = files.filter(ofile => ofile.key === key)[0];
                     if(fileTarget && fileTarget.saved === false){
