@@ -6,8 +6,60 @@ import { createStore, applyMiddleware } from 'redux';
 const initialState = {
     title: 'Title',
     newTabIndex: 0,
+    DBArchetypes: [],
     files: [
-        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', path:'', saved: false, key: '0' },
+        { title: 'Nuevo archivo', content: {
+            adl_version: " ",
+            archetype_id: {value: "Nuevo archivo"},
+            concept: " ",
+            definition: {
+                attributes: [],
+                node_id: " ",
+                occurrences: {
+                    lower: " ",
+                    lower_included: " ",
+                    lower_unbounded: " ",
+                    upper: " ",
+                    upper_included: " ",
+                    upper_unbounded: " "
+                },
+                rm_type_name: " "
+            },
+            description: {
+                details: {
+                    copyright: " ",
+                    keywords: " ",
+                    language: {
+                        code_string: " ",
+                        terminology_id: {
+                            value: " "
+                        }
+                    },
+                    misuse: " ",
+                    purpose: " ",
+                    use: " "
+                },
+                lifecycle_state: " ",
+                original_author: [],
+                other_contribuitors: [],
+                other_details: []
+            },
+            is_controlled: " ",
+            ontology: {
+                term_definitions: {
+                    items: []
+                }
+            },
+            original_language: {
+                code_string: " ",
+                terminology_id: {
+                    value: " "
+                }
+            },
+            uid: {
+                value: " "
+            }
+        }, saved: false, key: '0', _id: '', path:'' },
     ],
     currentFile: '0',
     dialogOpenFile: false,
@@ -70,6 +122,20 @@ const reducer = (state, action) => {
     } else if (action.type === 'changeFilename') {
         const { files } = state;
         files[action.indx].title = action.newName;
+        files[action.indx].saved = false;
+        const filename = action.newName.substr(0, action.newName.lastIndexOf('.'));
+        const ext = action.newName.substr(action.newName.lastIndexOf('.')+1);
+        if(filename !== ''){
+            if(ext !== '' && (ext === 'json' || ext === 'xml' || ext === 'adl')){
+                files[action.indx].content.archetype_id.value = filename;
+            }else{
+                files[action.indx].content.archetype_id.value = action.newName;
+            }
+        }else{
+            if(ext !== ''){
+                files[action.indx].content.archetype_id.value = ext;
+            }
+        }
         return {
             ...state,
             files
@@ -92,6 +158,19 @@ const reducer = (state, action) => {
         return {
             ...state,
             electron: action.electron
+        }
+    } else if (action.type === 'updateDBArchetypesVariable') {
+        return {
+            ...state,
+            DBArchetypes: action.DBArchetypes
+        }
+    } else if (action.type === 'updateFile') {
+        const { files } = state;
+        const fileTarget = files.filter(ofile => ofile.key === action.file.key)[0];
+        files[files.indexOf(fileTarget)] = action.file;
+        return {
+            ...state,
+            files
         }
     }
     

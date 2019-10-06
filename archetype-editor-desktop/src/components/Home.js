@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { changeTitle, toggleOpenFileDialog, handlerDownload, handlerSaveAs } from '../actions/home';
+import { changeTitle, toggleOpenFileDialog, handlerDownload, handlerSaveAs, openDbArchetype } from '../actions/home';
 import FileManager from './FileManager';
 import { onEdit } from '../actions/FileManager';
 import DropZone from './DropZoneFile';
-import { Button, Layout, Menu, Icon, Dropdown, Modal, Row } from 'antd';
+import { Button, Layout, Menu, Icon, Dropdown, Modal, Row, message } from 'antd';
 import './home.css';
 import ButtonGroup from 'antd/lib/button/button-group';
+import axios from 'axios';
+import { feedBackMessage } from '../actions/others';
 const { SubMenu } = Menu;
 const { Content, Footer, Sider} = Layout;
 var Maximize=true;
@@ -38,6 +40,14 @@ class Home extends Component {
             <Menu.Item key="svsaveas" onClick={()=>{this.props.handlerSaveAsFile(this.props.electron.ipcRenderer, this.props.currentFile, this.props.files)}}>
                 <Icon type="download" /> Guardar Como...
             </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="saveInDB" onClick={(e)=>{this.props.handlerSaveInDB(this.props.currentFile, this.props.files);}}>
+                <Icon type="database" /> Guardar actual en Base de datos
+            </Menu.Item>
+            <Menu.Item key="saveAllInDB" onClick={(e)=>{this.props.handlerSaveAllInDB(this.props.files);}}>
+                <Icon type="database" /> Guardar todos en Base de datos
+            </Menu.Item>
+            <Menu.Divider />
             <Menu.Item key="quit" onClick={this.handlerWindowClose}>Salir</Menu.Item>
         </Menu>);
     }
@@ -100,6 +110,9 @@ class Home extends Component {
     }
     toggle() {
         this.setState(state => ({ collapse: !state.collapse }));
+    }
+    componentWillMount(){
+        this.props.getArchetypes();
     }
     render(){
         return (
@@ -176,24 +189,14 @@ class Home extends Component {
                                     </span>
                                 }
                             >
-                                <Menu.Item key="1">Archetype 1</Menu.Item>
-                                <Menu.Item key="2">Archetype 2</Menu.Item>
-                                <Menu.Item key="3">Archetype 3</Menu.Item>
-                                <Menu.Item key="4">Archetype 4</Menu.Item>
-                            </SubMenu>
-                            <SubMenu
-                                key="cap2"
-                                title={
-                                <span>
-                                    <Icon type="folder" />
-                                    <span>Carpeta 2</span>
-                                </span>
+                                <Menu.Item onClick={this.props.getArchetypes}>
+                                    <Icon type="reload" /> Actualizar Lista
+                                </Menu.Item>
+                                {
+                                    this.props.DBArchetypes.map((archetype, indx)=>(
+                                        <Menu.Item key={ indx } onClick={(e)=>{this.props.handlerDBArchetypeClick(e, this.props.DBArchetypes);}}>{archetype.archetype_id.value}</Menu.Item>
+                                    ))
                                 }
-                            >
-                                <Menu.Item key="5">Archetype 1</Menu.Item>
-                                <Menu.Item key="6">Archetype 2</Menu.Item>
-                                <Menu.Item key="7">Archetype 3</Menu.Item>
-                                <Menu.Item key="8">Archetype 4</Menu.Item>
                             </SubMenu>
                             <SubMenu
                                 key="Blocks"
@@ -230,7 +233,8 @@ const mapStateToProps = state => {
         dialogOpenFile: state.dialogOpenFile,
         currentFile: state.currentFile,
         files: state.files,
-        electron: state.electron
+        electron: state.electron,
+        DBArchetypes: state.DBArchetypes
     };
 }
 
@@ -250,6 +254,115 @@ const mapDispatchToProps = dispatch => {
         },
         handlerSaveAsFile(ipc, file, files) {
             handlerSaveAs(ipc, file, files)
+        },
+        handlerSaveInDB(file, files){
+            const fileTarget = files.filter(ofile => ofile.key === file)[0];
+            if(navigator.onLine){
+                if(fileTarget._id === '') {
+                    axios.post('http://localhost:4000/api/archetype/', fileTarget.content, {
+                        headers: {'Access-Control-Allow-Origin': '*'}
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        if(response.data.success){
+                            fileTarget._id = response.data._id;
+                            dispatch({
+                                type: "updateFile",
+                                file: fileTarget
+                            });
+                            feedBackMessage({ type: "success", msg: "El arquetipo se ha subido correctamente."});
+                            this.getArchetypes();
+                        } else {
+                            feedBackMessage({ type: "error", msg: "Ya existe un arquetipo con ese nombre, por favor trabaja con el arquetipo encontrandolo en la lista."});
+                        }
+                        
+                    })
+                    .catch(e => {
+                        feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar guardar el arquetipo, comprueba tu conexión a internet."});
+                        console.log(e);
+                    });
+                } else if (fileTarget._id !== '') {
+                    axios.put('http://localhost:4000/api/archetype/', { _id : fileTarget._id, data: fileTarget.content})
+                    .then(response => {
+                        console.log(response.data);
+                        feedBackMessage({ type: "success", msg: "El arquetipo se ha actualizado correctamente."});
+                        this.getArchetypes();
+                    })
+                    .catch(e => {
+                        feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar guardar el arquetipo, comprueba tu conexión a internet."});
+                        console.log(e);
+                    });
+                }
+            }else{
+                feedBackMessage({ type: "error", msg: "Al parecer no tienes conexión a internet."});
+            }
+            
+            
+        },
+        handlerSaveAllInDB(files){
+            files.map((file,  indx)=>{
+                if(navigator.onLine){
+                    if(file._id === '') {
+                        axios.post('http://localhost:4000/api/archetype/', file.content, {
+                            headers: {'Access-Control-Allow-Origin': '*'}
+                        })
+                        .then(response => {
+                            console.log(response.data);
+                            if(response.data.success){
+                                file._id = response.data._id;
+                                dispatch({
+                                    type: "updateFile",
+                                    file
+                                });
+                                feedBackMessage({ type: "success", msg: "El arquetipo se ha subido correctamente."});
+                                this.getArchetypes();
+                            } else {
+                                feedBackMessage({ type: "error", msg: "Ya existe un arquetipo con ese nombre, por favor trabaja con el arquetipo encontrandolo en la lista."});
+                            }
+                        })
+                        .catch(e => {
+                            feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar guardar el arquetipo, comprueba tu conexión a internet."});
+                            console.log(e);
+                        });
+                    } else if (file._id !== '') {
+                        axios.put('http://localhost:4000/api/archetype/', { _id : file._id, data: file.content})
+                        .then(response => {
+                            console.log(response.data);
+                            feedBackMessage({ type: "success", msg: "El arquetipo se ha actualizado correctamente."});
+                            this.getArchetypes();
+                        })
+                        .catch(e => {
+                            feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar guardar el arquetipo, comprueba tu conexión a internet."});
+                            console.log(e);
+                        });
+                    }
+                } else {
+                    feedBackMessage({ type: "error", msg: "Al parecer no tienes conexión a internet."});
+                }
+                
+            });
+        },
+        getArchetypes(){
+            if(navigator.onLine){
+                return axios.get('http://localhost:4000/api/archetype/', {
+                    headers: {'Access-Control-Allow-Origin': '*'}
+                })
+                .then(response => {
+                    dispatch({
+                        type: 'updateDBArchetypesVariable',
+                        DBArchetypes: response.data
+                    });
+                })
+                .catch(e => {
+                    feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar contactar al servidor, comprueba tu conexión a internet."});
+                    console.log(e);
+                });
+            } else {
+                feedBackMessage({ type: "error", msg: "Al parecer no tienes conexión a internet."});
+            }
+        },
+        handlerDBArchetypeClick(e, DBArchetypes){
+            dispatch(openDbArchetype(DBArchetypes[parseInt(e.key)]));
         }
     }
 }

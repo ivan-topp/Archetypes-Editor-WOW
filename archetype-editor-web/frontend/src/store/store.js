@@ -122,7 +122,19 @@ const reducer = (state, action) => {
         const { files } = state;
         files[action.indx].title = action.newName;
         files[action.indx].saved = false;
-        files[action.indx].content.archetype_id.value = action.newName;
+        const filename = action.newName.substr(0, action.newName.lastIndexOf('.'));
+        const ext = action.newName.substr(action.newName.lastIndexOf('.')+1);
+        if(filename !== ''){
+            if(ext !== '' && (ext === 'json' || ext === 'xml' || ext === 'adl')){
+                files[action.indx].content.archetype_id.value = filename;
+            }else{
+                files[action.indx].content.archetype_id.value = action.newName;
+            }
+        }else{
+            if(ext !== ''){
+                files[action.indx].content.archetype_id.value = ext;
+            }
+        }
         return {
             ...state,
             files

@@ -49,7 +49,7 @@ class FileManager extends Component {
                                 </Paragraph>
                                 <Icon type="close" className="close" onClick={(e)=>{this.props.modalConfirm(e, this.props.currentFile, this.props.files, this.props.electron.ipcRenderer)}}/>
                             </div>} key={pane.key}>
-                            {pane.content}
+                            {JSON.stringify(pane.content)}
                         </TabPane>
                     ))}
                 </Tabs>
@@ -96,7 +96,9 @@ const mapDispatchToProps = dispatch => {
         showConfirm(key, files, ipc) {
             confirm({
                 title: 'Cuidado!',
-                content: 'Haz realizado cambios en el archivo, ¿Deseas descargar el archivo antes de cerrarlo?',
+                content: 'Haz realizado cambios en el archivo, ¿Deseas guardar el archivo antes de cerrarlo?',
+                okText: "Si, guardar cambios",
+                cancelText: "No",
                 onOk() {
                     const fileTarget = files.filter(ofile => ofile.key === key)[0];
                     if(fileTarget && fileTarget.saved === false){
