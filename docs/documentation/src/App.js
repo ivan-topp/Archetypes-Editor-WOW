@@ -9,7 +9,10 @@ import { Homepage } from './sections/Homepage';
 import { Appini } from './sections/Appini';
 import './App.css';
 import 'antd/dist/antd.css';
-const { Title } = Typography;
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+const { Paragraph, Title } = Typography;
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
@@ -28,7 +31,8 @@ class App extends Component {
     });
   }
   toggleContent = (event) => {
-    console.log(event.item.props.children.length);
+    //console.log(event.item.props.children.length);
+    console.log(event);
     if (event.item.props.children.length === 2) {
       if (event.item.props.children[1].props.children === "Comenzando") {
         this.setState({
@@ -59,6 +63,28 @@ class App extends Component {
       this.setState({
         content: Appini
       });
+    } else if(typeof event.item.props.children === 'string'){
+      /*if (event.item.props.children === "Any"){
+        const codeString = Home2;
+          const content = {
+            title: "Perico",
+            content: (
+                <div>
+                    <Title level={2}>Perico.</Title>
+                    <SyntaxHighlighter language="javascript" style={docco}>
+                      <Paragraph copyable>
+                        {
+                          codeString
+                        }
+                      </Paragraph>
+                    </SyntaxHighlighter>
+                </div>
+                )
+        };
+        this.setState({
+          content
+        });
+      }*/
     }
 }
 
