@@ -9,17 +9,34 @@ const changeTitle = newTitle => {
 };
 
 const openDbArchetype = (archetype) => {
-    const file = { title: archetype.archetype_id.value, content: {
-        adl_version: archetype.adl_version,
-        archetype_id: archetype.archetype_id,
-        concept: archetype.concept,
-        definition: archetype.definition,
-        description: archetype.description,
-        is_controlled: archetype.is_controlled,
-        ontology: archetype.ontology,
-        original_language: archetype.original_language,
-        uid: archetype.uid
-    }, saved: false, key: '0', _id: archetype._id };
+    let file = {};
+    if(archetype.translations){
+        file = { title: archetype.archetype_id.value, content: {
+            adl_version: archetype.adl_version,
+            archetype_id: archetype.archetype_id,
+            concept: archetype.concept,
+            definition: archetype.definition,
+            description: archetype.description,
+            is_controlled: archetype.is_controlled,
+            ontology: archetype.ontology,
+            original_language: archetype.original_language,
+            translations: archetype.translations,
+            uid: archetype.uid
+        }, saved: false, key: '0', _id: archetype._id };
+    } else {
+        file = { title: archetype.archetype_id.value, content: {
+            adl_version: archetype.adl_version,
+            archetype_id: archetype.archetype_id,
+            concept: archetype.concept,
+            definition: archetype.definition,
+            description: archetype.description,
+            is_controlled: archetype.is_controlled,
+            ontology: archetype.ontology,
+            original_language: archetype.original_language,
+            uid: archetype.uid
+        }, saved: false, key: '0', _id: archetype._id };
+    }
+
     return {
         type: "addFile", 
         file

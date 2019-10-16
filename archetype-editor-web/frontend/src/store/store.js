@@ -56,6 +56,7 @@ const initialState = {
                     value: " "
                 }
             },
+            translations: [],
             uid: {
                 value: " "
             }

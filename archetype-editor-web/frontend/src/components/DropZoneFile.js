@@ -202,7 +202,7 @@ const mapDispatchToProps = dispatch => {
                             xmlDoc.loadXML(r.target.result);
                             xmlDoc = xmlDoc.loadXML;
                           }
-                          var json = xml2json(xmlDoc); 
+                          var json = xml2json(xmlDoc);
                           nFile.content = json.archetype;
                           nFile.title = json.archetype.archetype_id.value;
                           nFile._id = ''

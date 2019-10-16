@@ -60,6 +60,7 @@ const onEdit = (action) => {
                         value: " "
                     }
                 },
+                translations: [],
                 uid: {
                     value: " "
                 }

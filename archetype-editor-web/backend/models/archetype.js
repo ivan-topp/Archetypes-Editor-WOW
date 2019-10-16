@@ -10,6 +10,7 @@ const ArchetypeSchema = new Schema({
     is_controlled: {type: String, required:true},
     ontology: {type:Object, required:true},
     original_language: {type: Object, required: true},
+    translations: {type: Array, required:false},
     uid: {type: Object, required:true}
 });
 
