@@ -1,62 +1,47 @@
-import React, { Component } from 'react';
+import React, { Component, Children } from 'react';
 import { connect } from 'react-redux';
-import { changeTitle, toggleOpenFileDialog, handlerDownload } from '../actions/home';
+import { changeTitle, toggleOpenFileDialog, handlerDownload, updateblocklist } from '../actions/home';
 import { onEdit } from '../actions/FileManager';
 import FileManager from './FileManager';
 import DropZone from './DropZoneFile';
-import { Button,Layout, Menu, Icon, Dropdown, Modal, Row } from 'antd';
+import { Button,Layout, Menu, Icon, Dropdown, Modal, Row, List, Col } from 'antd';
 import './Home.css';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const { SubMenu } = Menu;
 const { Content, Footer, Sider} = Layout;
 //-----------------------------------------------------------------------
 //---------------------------Test----------------------------------------
-const getItems = (count, offset = 0) =>
-    Array.from({ length: count }, (v, k) => k).map(k => ({
-        id: `items-${k + offset}`,
-        content: `Bloque ${k + offset}`
-    }));
+const getItems = count =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `item-${k}`,
+    content: `Bloque ${k}`
+  }));
 
-// Reordenar el resultado
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
+  
     return result;
-};
-
-//Mover el elemento de la lista de origen a una lista destino.
-const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-    destClone.splice(droppableDestination.index, 0, removed);
-
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
-
-    return result;
-};
-
+  };
 //Diseño de los bloques y si el bloque es agarrado 
 const grid = 6;
-const getItemStyle = (isDragging, draggableStyle) => ({
-    userSelect: "none",
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`, 
-      
-    background: isDragging ? "lightgreen" : "grey", 
-    ...draggableStyle
+const getItemStyle = (isDragging,draggableStyle ) => ({
+  userSelect: "none",
+  padding: grid * 2,
+  margin: `0 0 ${grid}px 0`, 
+    
+  background: isDragging ? "lightgreen" : "grey", 
+  ...draggableStyle
 });
 
 //Estilo del fondo del bloque
 const getListStyle = isDraggingOver => ({
-  //background: isDraggingOver ? "lightblue" : "lightgrey",
-  padding: grid,
-  width: 150
+background: isDraggingOver ? "lightblue" : "lightgrey",
+padding: grid,
+width: 150
 });
+
 //---------------------------Fin del test--------------------------------
 //-----------------------------------------------------------------------
 
@@ -66,8 +51,9 @@ class Home extends Component {
         this.toggle = this.toggle.bind(this);
         this.state = {
             collapsed:false,
-            items: getItems(4),
-            selected: getItems(3,4)
+            items1: getItems(4),
+            items2: []
+            
         };
         this.MenuFile = this.MenuFile.bind(this);
         this.MenuHelp = this.MenuHelp.bind(this);
@@ -75,66 +61,75 @@ class Home extends Component {
         this.MenuSelection = this.MenuSelection.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
-    /*id2List = {
-        droppable: 'items',
-        droppable2: 'selected'
-    };*/
-    //para manejar multiples listas
-    
-    
-    getList (id){
-        this.state[this.id2List[id]];
-    }
-    onDragEnd (result) {
-        const { source, destination } = result;
-        if (!destination) {
-            return;
-        }
-
-        if (source.droppableId === destination.droppableId) {
-            const items = reorder(
-                this.getList(source.droppableId),
-                source.index,
-                destination.index
-            );
-
-            let state = { items };
-
-            if (source.droppableId === 'droppable2') {
-                state = { selected: items };
-            }
-
-            this.setState(state);
-        } else {
-            const result = move(
-                this.getList(source.droppableId),
-                this.getList(destination.droppableId),
-                source,
-                destination
-            );
-
-            this.setState({
-                items: result.droppable,
-                selected: result.droppable2
-            });
-        }
-    }
-    //Donde finaliza el bloque que funciona
-    /*onDragEnd(result) {
+    onDragEnd(result) {
+        
         if (!result.destination) {
           return;
         }
     
-        const items = reorder(
-          this.state.items,
-          result.source.index,
-          result.destination.index
-        );
-    
-        this.setState({
-          items
-        });
-    }*/
+        if (result.source.droppableId !== result.destination.droppableId) {
+            let itemToMove;
+            let allList = this.props.allList;
+            allList.forEach((list,index) => {
+                list.lista=list.lista.splice(0);
+                /*if(result.source.droppableId === list.id){
+                    itemToMove=allList[index].lista.splice(result.source.index,1)[0];
+                    allListt
+                }*/
+            });
+            //ALGORITMO PARA TRASLADO DE BLOQUE AQUI(TENER EN CUENTA POSIBILIDAD DE AISLAR LA LISTA DE PRUEBA)
+            
+            if (result.source.droppableId === "Lista0") {
+                //console.log(allList[0].lista.filter(block => block.content === result.draggableId)[0]);
+                itemToMove = allList[0].lista.filter(block => block.content === result.draggableId)[0];
+                itemToMove = {id:itemToMove.id + "Copia",content:itemToMove.content + "Copia",type:itemToMove.type}; 
+                //itemToMove = allList[0].lista.splice(result.source.index, 1)[0];
+                const destinationlist = allList.filter(list => list.id === result.destination.droppableId)[0];
+                const originlist = allList.filter(list => list.id === result.source.droppableId)[0];
+                //console.log(itemToMove[0], result.destination.index, items2);
+               
+                if(destinationlist.type===itemToMove.type){
+                    console.log(result);
+                    
+                    allList[allList.indexOf(destinationlist)].lista.splice(result.destination.index, 0, itemToMove);
+                }
+            }
+            
+            /*else { Comentado pq aun no se esta utilizando el mover un bloque de la lista x a la lista de prueba, y no
+                        esta permitido la funcionalidad de que de una lista del workspace se transfiera a otra lista del workspace,
+                        pues cada lista del workspace es un tipo de bloque especifico.
+                itemToMove = allList[1].lista.splice(result.source.index, 1)[0];
+                allList[0].lista.splice(result.destination.index, 0, itemToMove);
+                console.log("Eliminando");
+            }//estado*/
+
+            //console.log(items1,items2);
+            allList.forEach(list =>{
+                    this.props.handlerUpdateList(list);
+            });
+                
+        } else {
+                /*let lista={}; Movimiento de los bloques en la misma lista
+                if (result.source.droppableId === "Lista0") {
+                    lista = {id: this.props.allList[0].id,lista: reorder(
+                    this.props.allList[0].lista,
+                    result.source.index,
+                    result.destination.index
+                    )};//estado
+                
+                
+                } else {
+                    lista = {id: this.props.allList[1].id,lista: reorder(
+                        this.props.allList[1].lista,
+                        result.source.index,
+                        result.destination.index
+                    )};//estado
+                
+                }
+                this.props.handlerUpdateList(lista);*/          
+          
+        }
+      }
     MenuFile() {
         return(<Menu theme="light">
             <Menu.Item key="nwfile" onClick={this.props.handlerAdd}><Icon type="file" /> Nuevo Archivo</Menu.Item>
@@ -207,6 +202,7 @@ class Home extends Component {
                     </Row>
                 </Layout>
                 <DragDropContext onDragEnd={this.onDragEnd}>
+                    <div>
                     <Layout>
                         <Sider collapsible onClick={this.toggle} style={{ minHeight: '100vh' }}>
                             <Menu
@@ -250,17 +246,13 @@ class Home extends Component {
                                     </span>
                                     }
                                 >
-                                    
-                                    <Droppable droppableId="droppable">
+                                    <Droppable droppableId="Lista0">
                                         {(provided, snapshot) => (
                                             <div
                                                 ref={provided.innerRef}
                                                 style={getListStyle(snapshot.isDraggingOver)}>
-                                                {this.state.items.map((item, index) => (
-                                                    <Draggable
-                                                        key={item.id}
-                                                        draggableId={item.id}
-                                                        index={index}>
+                                                {this.props.allList[0].lista.map((item, index) => (
+                                                    <Draggable key={`list1-${item.id}`} draggableId={item.id} index={index}>
                                                         {(provided, snapshot) => (
                                                             <div
                                                                 ref={provided.innerRef}
@@ -269,13 +261,17 @@ class Home extends Component {
                                                                 style={getItemStyle(
                                                                     snapshot.isDragging,
                                                                     provided.draggableProps.style
-                                                                )}>
+                                                            )}>
+                                                                
                                                                 {item.content}
+
                                                             </div>
                                                         )}
                                                     </Draggable>
                                                 ))}
+                                                
                                                 {provided.placeholder}
+                                                
                                             </div>
                                         )}
                                     </Droppable>
@@ -286,36 +282,255 @@ class Home extends Component {
                         <Layout>
                             <Content>
                                 <Layout>
-                                
-                                <Droppable droppableId="droppable2">
-                                    {(provided, snapshot) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            style={getListStyle(snapshot.isDraggingOver)}>
-                                            {this.state.selected.map((item, index) => (
-                                                <Draggable
-                                                    key={item.id}
-                                                    draggableId={item.id}
-                                                    index={index}>
-                                                    {(provided, snapshot) => (
+                                    <Row>
+                                        <Col span={8}>
+                                            <Droppable droppableId="Lista1" >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 0</h6>
+                                                        </div>
                                                         <div
                                                             ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            style={getItemStyle(
-                                                                snapshot.isDragging,
-                                                                provided.draggableProps.style
-                                                            )}>
-                                                            {item.content}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[1].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list2-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
                                                         </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                                
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Droppable  droppableId="Lista2"  >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 1</h6>
+                                                        </div>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[2].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list3-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Droppable droppableId="Lista3"  >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 2</h6>
+                                                        </div>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[3].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list4-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span={8}>
+                                                                                    <h1>poto</h1>
+                                        </Col>
+                                        <Col span={8}>
+                                        <h1>CACA</h1>
+                                        </Col>
+                                        <Col span={8}>
+                                    <h1>pichi</h1>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span={8}>
+                                            <Droppable  droppableId="Lista4"  >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 3</h6>
+                                                        </div>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[4].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list5-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Droppable>                                       
+                                        </Col>
+                                        <Col span={8}>
+                                            <Droppable  droppableId="Lista5"  >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 4</h6>
+                                                        </div>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[5].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list6-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Droppable>                                     
+                                        </Col>
+                                        <Col span={8}>
+                                            <Droppable  droppableId="Lista6"  >
+                                                {(provided, snapshot) => (
+                                                    
+                                                    <div>
+                                                        <div>
+                                                            <h6>Descripcion 5</h6>
+                                                        </div>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            style={getListStyle(snapshot.isDraggingOver)}>
+                                                            {this.props.allList[6].lista.map((item, index) => (
+                                                                
+                                                                <Draggable key={`list7-${item.id}`} draggableId={item.id} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div>
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                style={getItemStyle(
+                                                                                    provided.draggableProps.style,
+                                                                                    snapshot.isDragging
+                                                                                )}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {item.content}
+                                                                            </div>
+                                                                            {provided.placeholder}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        </Col>
+                                    </Row>                                                  
                                 </Layout>
                             </Content>
                             <Footer style={{ textAlign: 'center' }}>
@@ -323,6 +538,7 @@ class Home extends Component {
                             </Footer>
                         </Layout>
                     </Layout>
+                    </div>
                 </DragDropContext>
             </div>
         );
@@ -334,7 +550,8 @@ const mapStateToProps = state => {
         title: state.title,
         dialogOpenFile: state.dialogOpenFile,
         currentFile: state.currentFile,
-        files: state.files
+        files: state.files,
+        allList:state.allList
     };
 }
 
@@ -351,7 +568,11 @@ const mapDispatchToProps = dispatch => {
         },
         handlerDownloadFile(file, files) {
             handlerDownload(dispatch, file, files)
+        },
+        handlerUpdateList(blocklist){
+            dispatch(updateblocklist(blocklist));
         }
+
     }
 }
 

@@ -2,7 +2,12 @@ import { createStore, applyMiddleware } from 'redux';
 
 // Es aqui en el Store donde se almacena el estado de la aplicacion completa de manera centralizada
 /* Esta constante define los valores predeterminados del estado que tendra la aplicacion al comienzo */
-
+const getItems = count =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `Bloque ${k}`,
+    content: `Bloque ${k}`,
+    
+  }));
 const initialState = {
     title: 'Title',
     newTabIndex: 0,
@@ -10,7 +15,44 @@ const initialState = {
         { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', saved: false, key: '0' },
     ],
     currentFile: '0',
-    dialogOpenFile: false
+    dialogOpenFile: false,
+    allList: [
+        {id:"Lista0",lista:[
+            {id:'Bloque 0',
+             content:'Bloque 0',
+             type: 'Descripcion0'  
+            },
+            {id:'Bloque 1',
+             content:'Bloque 1',
+             type: 'Descripcion1'  
+            },
+            {id:'Bloque 2',
+             content:'Bloque 2',
+             type: 'Descripcion2'  
+            },
+            {id:'Bloque 3',
+             content:'Bloque 3',
+             type: 'Descripcion3'  
+            },
+            {id:'Bloque 4',
+             content:'Bloque 4',
+             type: 'Descripcion4'  
+            },
+            {id:'Bloque 5',
+             content:'Bloque 5',
+             type: 'Descripcion5'  
+            }
+
+        ],type:"Prueba"},
+        {id:"Lista1",lista:[],type:"Descripcion0"},
+        {id:"Lista2",lista:[],type:"Descripcion1"},
+        {id:"Lista3",lista:[],type:"Descripcion2"},
+        {id:"Lista4",lista:[],type:"Descripcion3"},
+        {id:"Lista5",lista:[],type:"Descripcion4"},
+        {id:"Lista6",lista:[],type:"Descripcion5"}
+
+    ]
+
 }
 
 // Es aqui en el reducer donde se recibe el type de la accion a realizar y donde se realiza esta misma.
@@ -86,6 +128,27 @@ const reducer = (state, action) => {
             ...state,
             files
         }
+    } else if(action.type==='updateblocklist'){
+        const {allList}=state;
+        const aux = state.allList.filter(list => list.id === action.blocklist.id)[0];
+       
+        allList[allList.indexOf(aux)]=action.blocklist;
+        return{
+            ...state,
+            allList
+        }
+        /*if(action.list==='Lista1'){
+            return {
+                ...state,
+                items1: action.blocklist
+            }
+        }else if(action.list==='Lista2'){
+            return {
+                ...state,
+                items2: action.blocklist
+            }
+        }*/
+        
     }
     
     return state;
