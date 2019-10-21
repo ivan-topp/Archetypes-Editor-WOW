@@ -41,12 +41,7 @@ const handlerDownload = (dispatch, file, files) => {
         
     }
 }
-const updateblocklist = (blocklist) =>{
-    return {
-        type: 'updateblocklist', 
-        blocklist
-    }
-}
+
 
 /*const getCollection = () => {
     return dispatch => {
@@ -60,4 +55,4 @@ const updateblocklist = (blocklist) =>{
     }
 }*/
 
-export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload,updateblocklist };
+export { changeTitle, toggleOpenFileDialog, saveFile, handlerDownload };

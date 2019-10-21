@@ -12,46 +12,47 @@ const initialState = {
     title: 'Title',
     newTabIndex: 0,
     files: [
-        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', saved: false, key: '0' },
+        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', saved: false, key: '0' ,
+        allList: [
+            {id:"Lista10",lista:[],type:"Descripcion0"},
+            {id:"Lista20",lista:[],type:"Descripcion1"},
+            {id:"Lista30",lista:[],type:"Descripcion2"},
+            {id:"Lista40",lista:[],type:"Descripcion3"},
+            {id:"Lista50",lista:[],type:"Descripcion4"},
+            {id:"Lista60",lista:[],type:"Descripcion5"}
+    
+        ]},
     ],
     currentFile: '0',
     dialogOpenFile: false,
-    allList: [
-        {id:"Lista0",lista:[
-            {id:'Bloque 0',
-             content:'Bloque 0',
-             type: 'Descripcion0'  
-            },
-            {id:'Bloque 1',
-             content:'Bloque 1',
-             type: 'Descripcion1'  
-            },
-            {id:'Bloque 2',
-             content:'Bloque 2',
-             type: 'Descripcion2'  
-            },
-            {id:'Bloque 3',
-             content:'Bloque 3',
-             type: 'Descripcion3'  
-            },
-            {id:'Bloque 4',
-             content:'Bloque 4',
-             type: 'Descripcion4'  
-            },
-            {id:'Bloque 5',
-             content:'Bloque 5',
-             type: 'Descripcion5'  
-            }
+    
+    sampleList: {id:"Lista0",lista:[
+        {id:'Bloque 0',
+         content:'Bloque 0',
+         type: 'Descripcion0'  
+        },
+        {id:'Bloque 1',
+         content:'Bloque 1',
+         type: 'Descripcion1'  
+        },
+        {id:'Bloque 2',
+         content:'Bloque 2',
+         type: 'Descripcion2'  
+        },
+        {id:'Bloque 3',
+         content:'Bloque 3',
+         type: 'Descripcion3'  
+        },
+        {id:'Bloque 4',
+         content:'Bloque 4',
+         type: 'Descripcion4'  
+        },
+        {id:'Bloque 5',
+         content:'Bloque 5',
+         type: 'Descripcion5'  
+        }
 
-        ],type:"Prueba"},
-        {id:"Lista1",lista:[],type:"Descripcion0"},
-        {id:"Lista2",lista:[],type:"Descripcion1"},
-        {id:"Lista3",lista:[],type:"Descripcion2"},
-        {id:"Lista4",lista:[],type:"Descripcion3"},
-        {id:"Lista5",lista:[],type:"Descripcion4"},
-        {id:"Lista6",lista:[],type:"Descripcion5"}
-
-    ]
+    ],type:"Sample"},
 
 }
 
@@ -72,6 +73,9 @@ const reducer = (state, action) => {
         const { newTabIndex } = state;
         const file = action.file;
         file.key = (newTabIndex + 1).toString();
+        file.allList.forEach((list)=>{
+            list.id=list.id + file.key;
+          });
         file.saved = false;
         return{
             ...state, 
@@ -129,13 +133,15 @@ const reducer = (state, action) => {
             files
         }
     } else if(action.type==='updateblocklist'){
-        const {allList}=state;
-        const aux = state.allList.filter(list => list.id === action.blocklist.id)[0];
+        let {files} = state;
+        let file = files.filter(file=>file.key===state.currentFile)[0];
+        const aux = files.filter(file=>file.key===state.currentFile)[0].allList.filter(list => list.id === action.blocklist.id)[0];
+        files[files.indexOf(file)].allList[file.allList.indexOf(aux)]=action.blocklist;
+        
        
-        allList[allList.indexOf(aux)]=action.blocklist;
         return{
             ...state,
-            allList
+            files
         }
         /*if(action.list==='Lista1'){
             return {
