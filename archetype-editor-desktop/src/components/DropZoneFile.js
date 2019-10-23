@@ -6,6 +6,35 @@ import { feedBackMessage } from '../actions/others';
 import { Icon } from 'antd';
 import './DropZoneFile.css';
 
+function xml2json(xml) {
+  try {
+    var obj = {};
+    if (xml.children.length > 0) {
+      for (var i = 0; i < xml.children.length; i++) {
+        var item = xml.children.item(i);
+        var nodeName = item.nodeName;
+
+        if (typeof (obj[nodeName]) == "undefined") {
+          obj[nodeName] = xml2json(item);
+        } else {
+          if (typeof (obj[nodeName].push) == "undefined") {
+            var old = obj[nodeName];
+
+            obj[nodeName] = [];
+            obj[nodeName].push(old);
+          }
+          obj[nodeName].push(xml2json(item));
+        }
+      }
+    } else {
+      obj = xml.textContent;
+    }
+    return obj;
+  } catch (e) {
+      console.log(e.message);
+  }
+}
+
 class Dropzone extends Component {
   constructor(props) {
     super(props);
@@ -110,8 +139,71 @@ const mapDispatchToProps = dispatch => {
                     const equalFiles = files.filter(ofile => ofile.title === file.name);
                     if (equalFiles.length <= 0) {
                       const reader = new FileReader();
-                      const nFile = { title: '', content: '', path:'', saved: false, key: '0' };
+                      const nFile = { title: 'Nuevo archivo', content: {
+                        adl_version: " ",
+                        archetype_id: {value: "Nuevo archivo"},
+                        concept: " ",
+                        definition: {
+                            attributes: [],
+                            node_id: " ",
+                            occurrences: {
+                                lower: " ",
+                                lower_included: " ",
+                                lower_unbounded: " ",
+                                upper: " ",
+                                upper_included: " ",
+                                upper_unbounded: " "
+                            },
+                            rm_type_name: " "
+                        },
+                        description: {
+                            details: {
+                                copyright: " ",
+                                keywords: " ",
+                                language: {
+                                    code_string: " ",
+                                    terminology_id: {
+                                        value: " "
+                                    }
+                                },
+                                misuse: " ",
+                                purpose: " ",
+                                use: " "
+                            },
+                            lifecycle_state: " ",
+                            original_author: [],
+                            other_contribuitors: [],
+                            other_details: []
+                        },
+                        is_controlled: " ",
+                        ontology: {
+                            term_definitions: {
+                                items: []
+                            }
+                        },
+                        original_language: {
+                            code_string: " ",
+                            terminology_id: {
+                                value: " "
+                            }
+                        },
+                        translations: [],
+                        uid: {
+                            value: " "
+                        }
+                      }, saved: false, key: '0' ,
+                      allList: [
+                        {id:"Lista1",lista:[],type:"State"},
+                        {id:"Lista2",lista:[],type:"Protocol"},
+                        {id:"Lista3",lista:[],type:"Data"},
+                        {id:"Lista4",lista:[],type:"Events"},
+                        {id:"Lista5",lista:[],type:"Description"},
+                        {id:"Lista6",lista:[],type:"Atributtion"}
+                      ]};
                       nFile.key = (newTabIndex + 1).toString();
+                      nFile.allList.forEach((list)=>{
+                        list.id=list.id + nFile.key;
+                      });
                       newTabIndex+=1;
                       nFile.title = file.name;
                       nFile.path = file.path;
@@ -123,43 +215,14 @@ const mapDispatchToProps = dispatch => {
                             xmlDoc = parser1.parseFromString(r.target.result, "text/xml");
                           }
                           else{
-                            
                             xmlDoc.async = false;
                             xmlDoc.loadXML(r.target.result);
                             xmlDoc = xmlDoc.loadXML;
                           }
-                          function xml2json(xml) {
-                            try {
-                              var obj = {};
-                              if (xml.children.length > 0) {
-                                for (var i = 0; i < xml.children.length; i++) {
-                                  var item = xml.children.item(i);
-                                  var nodeName = item.nodeName;
-
-                                  if (typeof (obj[nodeName]) == "undefined") {
-                                    obj[nodeName] = xml2json(item);
-                                  } else {
-                                    if (typeof (obj[nodeName].push) == "undefined") {
-                                      var old = obj[nodeName];
-
-                                      obj[nodeName] = [];
-                                      obj[nodeName].push(old);
-                                    }
-                                    obj[nodeName].push(xml2json(item));
-                                  }
-                                }
-                              } else {
-                                obj = xml.textContent;
-                              }
-                              return obj;
-                            } catch (e) {
-                                console.log(e.message);
-                            }
-                          }
                           var json = xml2json(xmlDoc); 
-                          var json2 = JSON.stringify(json);
-                          nFile.content = json2;
-                          
+                          nFile.content = json.archetype;
+                          nFile.title = json.archetype.archetype_id.value;
+                          nFile._id = ''
                         }
                         else{
                             nFile.content = r.target.result;
