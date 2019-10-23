@@ -60,10 +60,20 @@ const onEdit = (action) => {
                         value: " "
                     }
                 },
+                translations: [],
                 uid: {
                     value: " "
                 }
-            }, saved: false, key: '0', _id: '' }
+            }, saved: false, key: '0', _id: '' ,
+            allList: [
+                {id:"Lista1",lista:[],type:"State"},
+                {id:"Lista2",lista:[],type:"Protocol"},
+                {id:"Lista3",lista:[],type:"Data"},
+                {id:"Lista4",lista:[],type:"Events"},
+                {id:"Lista5",lista:[],type:"Description"},
+                {id:"Lista6",lista:[],type:"Atributtion"}
+
+            ]}
         };
     }
     
@@ -96,5 +106,10 @@ const removeFile = key => {
             });
     }
 }*/
-
-export { toggleFile, onEdit, changeName, removeFile };
+const updateblocklist = (blocklist) =>{
+    return {
+        type: 'updateblocklist', 
+        blocklist
+    }
+}
+export { toggleFile, onEdit, changeName, removeFile, updateblocklist };

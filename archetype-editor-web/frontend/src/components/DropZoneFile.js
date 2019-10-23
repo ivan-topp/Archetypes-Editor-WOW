@@ -187,8 +187,19 @@ const mapDispatchToProps = dispatch => {
                         uid: {
                             value: " "
                         }
-                    }, saved: false, key: '0' };
+                    }, saved: false, key: '0' ,
+                    allList: [
+                        {id:"Lista1",lista:[],type:"State"},
+                        {id:"Lista2",lista:[],type:"Protocol"},
+                        {id:"Lista3",lista:[],type:"Data"},
+                        {id:"Lista4",lista:[],type:"Events"},
+                        {id:"Lista5",lista:[],type:"Description"},
+                        {id:"Lista6",lista:[],type:"Atributtion"}
+                    ]};
                       nFile.key = (newTabIndex + 1).toString();
+                      nFile.allList.forEach((list)=>{
+                        list.id=list.id + nFile.key;
+                      });
                       newTabIndex+=1;
                       nFile.title = file.name;
                       reader.onload = (r)=>{
