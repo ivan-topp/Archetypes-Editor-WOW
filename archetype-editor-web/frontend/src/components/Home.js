@@ -11,37 +11,32 @@ const { SubMenu } = Menu;
 const { Content, Footer, Sider} = Layout;
 //-----------------------------------------------------------------------
 //---------------------------Test----------------------------------------
-const getItems = count =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k}`,
-    content: `Bloque ${k}`
-  }));
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
+const grid = 6;
   
-    return result;
-  };
-  const grid = 6;
-  const getItemStyle = (isDragging,draggableStyle ) => ({
+const getItemStyle = (isDragging,draggableStyle ) => ({
     userSelect: "none",
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`, 
-      
+    padding: grid * 5,
+    marginTop: 10,
+    marginLeft:20,
+    marginRight:20,
+    marginBottom:10,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 30,
+    border:"solid",
     background: isDragging ? "#6188C0" : "#6188C0", 
     ...draggableStyle
+});
   
-    
-  });
-  
-  //Estilo del fondo del bloque
-  const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "none" : "lightgrey",
-  padding: grid,
+  //Estilo del fondo 
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? "none" : "none",
+  padding: 1,
+  borderRadius: 10,
   width: 190
-  });
+});
 
 //---------------------------Fin del test--------------------------------
 //-----------------------------------------------------------------------
@@ -51,10 +46,7 @@ class Home extends Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.state = {
-            collapsed:false,
-            items1: getItems(4),
-            items2: []
-            
+            collapsed:false
         };
         this.MenuFile = this.MenuFile.bind(this);
         this.MenuHelp = this.MenuHelp.bind(this);
@@ -83,7 +75,7 @@ class Home extends Component {
             if (result.source.droppableId === "Lista0") {
                 //console.log(allList[0].lista.filter(block => block.content === result.draggableId)[0]);
                 itemToMove = this.props.sampleList.lista.filter(block => block.content === result.draggableId)[0];
-                itemToMove = {id:itemToMove.id + this.props.currentFile + "Copia",content:itemToMove.content +this.props.currentFile+ "Copia",type:itemToMove.type};
+                itemToMove = {id:itemToMove.id + this.props.currentFile + "Copia", content:itemToMove.content + this.props.currentFile + "Copia",type:itemToMove.type};
                 //itemToMove = allList[0].lista.splice(result.source.index, 1)[0];
                 const destinationlist = allList.filter(list => list.id === result.destination.droppableId)[0];
                 //const originlist = allList.filter(list => list.id === result.source.droppableId)[0];
@@ -91,7 +83,6 @@ class Home extends Component {
                
                 if(destinationlist.type===itemToMove.type){
                     console.log(result);
-                    
                     allList[allList.indexOf(destinationlist)].lista.splice(result.destination.index, 0, itemToMove);
                 }
             }
@@ -283,8 +274,7 @@ class Home extends Component {
                         <Layout>
                             <Content>
                                 <FileManager>
-                                   <h1>sw</h1>
-                                   <h1>sw</h1>  
+                                     
                                 </FileManager>
                                 
                             </Content>

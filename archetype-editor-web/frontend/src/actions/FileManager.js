@@ -14,12 +14,12 @@ const onEdit = (action) => {
             type: 'addFile',
             file: { title: 'Nuevo archivo', content: <h1>Nuevo Archivo</h1>, key: 0 ,
             allList: [
-                {id:"Lista1",lista:[],type:"Descripcion0"},
-                {id:"Lista2",lista:[],type:"Descripcion1"},
-                {id:"Lista3",lista:[],type:"Descripcion2"},
-                {id:"Lista4",lista:[],type:"Descripcion3"},
-                {id:"Lista5",lista:[],type:"Descripcion4"},
-                {id:"Lista6",lista:[],type:"Descripcion5"}
+                {id:"Lista1",lista:[],type:"State"},
+                {id:"Lista2",lista:[],type:"Protocol"},
+                {id:"Lista3",lista:[],type:"Data"},
+                {id:"Lista4",lista:[],type:"Events"},
+                {id:"Lista5",lista:[],type:"Description"},
+                {id:"Lista6",lista:[],type:"Atributtion"}
         
             ]}
         };

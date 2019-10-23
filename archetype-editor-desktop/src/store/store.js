@@ -2,15 +2,57 @@ import { createStore, applyMiddleware } from 'redux';
 
 // Es aqui en el Store donde se almacena el estado de la aplicacion completa de manera centralizada
 /* Esta constante define los valores predeterminados del estado que tendra la aplicacion al comienzo */
-
+const getItems = count =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `Bloque ${k}`,
+    content: `Bloque ${k}`,
+    
+  }));
 const initialState = {
     title: 'Title',
     newTabIndex: 0,
     files: [
-        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', path:'', saved: false, key: '0' },
+        { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', path:'', saved: false, key: '0' ,
+        allList: [
+            {id:"Lista10",lista:[],type:"State"},
+            {id:"Lista20",lista:[],type:"Protocol"},
+            {id:"Lista30",lista:[],type:"Data"},
+            {id:"Lista40",lista:[],type:"Events"},
+            {id:"Lista50",lista:[],type:"Description"},
+            {id:"Lista60",lista:[],type:"Atributtion"}
+    
+        ]},
     ],
     currentFile: '0',
     dialogOpenFile: false,
+    
+    sampleList: {id:"Lista0",lista:[
+        {id:'Bloque 0',
+         content:'Bloque 0',
+         type: 'State'  
+        },
+        {id:'Bloque 1',
+         content:'Bloque 1',
+         type: 'Protocol'  
+        },
+        {id:'Bloque 2',
+         content:'Bloque 2',
+         type: 'Data'  
+        },
+        {id:'Bloque 3',
+         content:'Bloque 3',
+         type: 'Events'  
+        },
+        {id:'Bloque 4',
+         content:'Bloque 4',
+         type: 'Description'  
+        },
+        {id:'Bloque 5',
+         content:'Bloque 5',
+         type: 'Atributtion'  
+        }
+
+    ],type:"Sample"},
     electron: null
 }
 
@@ -31,6 +73,9 @@ const reducer = (state, action) => {
         const { newTabIndex } = state;
         const file = action.file;
         file.key = (newTabIndex + 1).toString();
+        file.allList.forEach((list)=>{
+            list.id=list.id + file.key;
+          });
         file.saved = false;
         file.path = '';
         return{
@@ -88,7 +133,30 @@ const reducer = (state, action) => {
             ...state,
             files
         }
-    } else if (action.type === "setElectron") {
+    } else if(action.type==='updateblocklist'){
+        let {files} = state;
+        let file = files.filter(file=>file.key===state.currentFile)[0];
+        const aux = files.filter(file=>file.key===state.currentFile)[0].allList.filter(list => list.id === action.blocklist.id)[0];
+        files[files.indexOf(file)].allList[file.allList.indexOf(aux)]=action.blocklist;
+        
+       
+        return{
+            ...state,
+            files
+        }
+        /*if(action.list==='Lista1'){
+            return {
+                ...state,
+                items1: action.blocklist
+            }
+        }else if(action.list==='Lista2'){
+            return {
+                ...state,
+                items2: action.blocklist
+            }
+        }*/
+        
+    }else if (action.type === "setElectron") {
         return {
             ...state,
             electron: action.electron

@@ -12,7 +12,16 @@ const onEdit = (action) => {
     if(action === 'add'){
         return {
             type: 'addFile',
-            file: { title: 'Nuevo archivo', content: <h1>Nuevo Archivo</h1>, key: 0 }
+            file: { title: 'Nuevo archivo', content: <h1>Nuevo Archivo</h1>, key: 0 ,
+            allList: [
+                {id:"Lista1",lista:[],type:"State"},
+                {id:"Lista2",lista:[],type:"Protocol"},
+                {id:"Lista3",lista:[],type:"Data"},
+                {id:"Lista4",lista:[],type:"Events"},
+                {id:"Lista5",lista:[],type:"Description"},
+                {id:"Lista6",lista:[],type:"Atributtion"}
+        
+            ]}
         };
     }
     
@@ -45,5 +54,10 @@ const removeFile = key => {
             });
     }
 }*/
-
-export { toggleFile, onEdit, changeName, removeFile };
+const updateblocklist = (blocklist) =>{
+    return {
+        type: 'updateblocklist', 
+        blocklist
+    }
+}
+export { toggleFile, onEdit, changeName, removeFile, updateblocklist };

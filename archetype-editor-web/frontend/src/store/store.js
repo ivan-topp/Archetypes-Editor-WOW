@@ -14,12 +14,12 @@ const initialState = {
     files: [
         { title: 'Nuevo archivo', content: 'Content of Tab Pane 1', saved: false, key: '0' ,
         allList: [
-            {id:"Lista10",lista:[],type:"Descripcion0"},
-            {id:"Lista20",lista:[],type:"Descripcion1"},
-            {id:"Lista30",lista:[],type:"Descripcion2"},
-            {id:"Lista40",lista:[],type:"Descripcion3"},
-            {id:"Lista50",lista:[],type:"Descripcion4"},
-            {id:"Lista60",lista:[],type:"Descripcion5"}
+            {id:"Lista10",lista:[],type:"State"},
+            {id:"Lista20",lista:[],type:"Protocol"},
+            {id:"Lista30",lista:[],type:"Data"},
+            {id:"Lista40",lista:[],type:"Events"},
+            {id:"Lista50",lista:[],type:"Description"},
+            {id:"Lista60",lista:[],type:"Atributtion"}
     
         ]},
     ],
@@ -29,27 +29,27 @@ const initialState = {
     sampleList: {id:"Lista0",lista:[
         {id:'Bloque 0',
          content:'Bloque 0',
-         type: 'Descripcion0'  
+         type: 'State'  
         },
         {id:'Bloque 1',
          content:'Bloque 1',
-         type: 'Descripcion1'  
+         type: 'Protocol'  
         },
         {id:'Bloque 2',
          content:'Bloque 2',
-         type: 'Descripcion2'  
+         type: 'Data'  
         },
         {id:'Bloque 3',
          content:'Bloque 3',
-         type: 'Descripcion3'  
+         type: 'Events'  
         },
         {id:'Bloque 4',
          content:'Bloque 4',
-         type: 'Descripcion4'  
+         type: 'Description'  
         },
         {id:'Bloque 5',
          content:'Bloque 5',
-         type: 'Descripcion5'  
+         type: 'Atributtion'  
         }
 
     ],type:"Sample"},

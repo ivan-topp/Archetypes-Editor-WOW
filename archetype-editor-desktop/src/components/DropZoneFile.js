@@ -110,8 +110,20 @@ const mapDispatchToProps = dispatch => {
                     const equalFiles = files.filter(ofile => ofile.title === file.name);
                     if (equalFiles.length <= 0) {
                       const reader = new FileReader();
-                      const nFile = { title: '', content: '', path:'', saved: false, key: '0' };
+                      const nFile = { title: '', content: '', path:'', saved: false, key: '0',
+                      allList: [
+                        {id:"Lista1",lista:[],type:"State"},
+                        {id:"Lista2",lista:[],type:"Protocol"},
+                        {id:"Lista3",lista:[],type:"Data"},
+                        {id:"Lista4",lista:[],type:"Events"},
+                        {id:"Lista5",lista:[],type:"Description"},
+                        {id:"Lista6",lista:[],type:"Atributtion"}
+                
+                      ]};
                       nFile.key = (newTabIndex + 1).toString();
+                      nFile.allList.forEach((list)=>{
+                        list.id=list.id + nFile.key;
+                      });
                       newTabIndex+=1;
                       nFile.title = file.name;
                       nFile.path = file.path;

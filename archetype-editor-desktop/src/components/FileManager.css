@@ -12,3 +12,16 @@
 .file-manager{
     background-color: white;
 }
+.bloque{
+    padding: 15px;
+    width: 170px;
+    margin-left: 10px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 30px;
+    border:5px solid;
+    border-color:rgb(200, 213, 233);
+    background-color: rgb(132, 172, 230);
+    color:rgb(200, 213, 233);
+}
