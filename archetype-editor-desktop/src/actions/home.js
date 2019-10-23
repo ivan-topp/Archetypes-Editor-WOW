@@ -36,7 +36,16 @@ const openDbArchetype = (archetype) => {
             original_language: archetype.original_language,
             translations: archetype.translations,
             uid: archetype.uid
-        }, saved: false, key: '0', _id: archetype._id };
+        }, saved: false, key: '0', _id: archetype._id ,
+        allList: [
+            {id:"Lista1",lista:[],type:"State"},
+            {id:"Lista2",lista:[],type:"Protocol"},
+            {id:"Lista3",lista:[],type:"Data"},
+            {id:"Lista4",lista:[],type:"Events"},
+            {id:"Lista5",lista:[],type:"Description"},
+            {id:"Lista6",lista:[],type:"Atributtion"}
+    
+        ]};
     } else {
         file = { title: archetype.archetype_id.value, content: {
             adl_version: archetype.adl_version,
@@ -48,7 +57,16 @@ const openDbArchetype = (archetype) => {
             ontology: archetype.ontology,
             original_language: archetype.original_language,
             uid: archetype.uid
-        }, saved: false, key: '0', _id: archetype._id };
+        }, saved: false, key: '0', _id: archetype._id ,
+        allList: [
+            {id:"Lista1",lista:[],type:"State"},
+            {id:"Lista2",lista:[],type:"Protocol"},
+            {id:"Lista3",lista:[],type:"Data"},
+            {id:"Lista4",lista:[],type:"Events"},
+            {id:"Lista5",lista:[],type:"Description"},
+            {id:"Lista6",lista:[],type:"Atributtion"}
+    
+        ]};
     }
 
     return {
