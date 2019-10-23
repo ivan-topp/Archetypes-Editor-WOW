@@ -187,6 +187,7 @@ const mapDispatchToProps = dispatch => {
                                 value: " "
                             }
                         },
+                        translations: [],
                         uid: {
                             value: " "
                         }

@@ -185,7 +185,7 @@ class Home extends Component {
                                 title={
                                     <span>
                                         <Icon type="folder" />
-                                        <span>Carpeta 1</span>
+                                        <span>Arquetipos</span>
                                     </span>
                                 }
                             >
