@@ -10,6 +10,7 @@
     "app": "npx webpack-dev-server -d",
     "server": "cross-env NODE_ENV=development nodemon backend/index.js"
   },
+  "homepage": "",
   "keywords": [],
   "author": "Ivan Topp, Alejandro Guzman, Gonzalo Garrido",
   "license": "GLPv3",
