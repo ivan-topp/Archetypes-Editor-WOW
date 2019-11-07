@@ -209,7 +209,7 @@ class Home extends Component {
         this.setState(state => ({ collapse: !state.collapse }));
     }
     componentWillMount(){
-        this.props.getArchetypes();
+        this.props.getArchetypes(false);
     }
     render(){
         return (
@@ -474,7 +474,7 @@ const mapDispatchToProps = dispatch => {
                 
             });
         },
-        getArchetypes(){
+        getArchetypes(feedback=true){
             if(navigator.onLine){
                 return axios.get('http://localhost:4000/api/archetype/', {
                     headers: {'Access-Control-Allow-Origin': '*'}
@@ -486,8 +486,9 @@ const mapDispatchToProps = dispatch => {
                     });
                 })
                 .catch(e => {
-                    feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar contactar al servidor, comprueba tu conexión a internet."});
-                    console.log(e);
+                    if(feedback){
+                        feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar contactar al servidor, comprueba tu conexión a internet."});
+                    }
                 });
             } else {
                 feedBackMessage({ type: "error", msg: "Al parecer no tienes conexión a internet."});
