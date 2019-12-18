@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { changeTitle, toggleOpenFileDialog, handlerDownload, handlerSaveAs, openDbArchetype } from '../actions/home';
 import FileManager from './FileManager';
+import Scrollbar from './Scrollbar';
 import { onEdit, updateblocklist } from '../actions/FileManager';
 import DropZone from './DropZoneFile';
-import { Button,Layout, Menu, Icon, Dropdown, Modal, Row } from 'antd';
+import { Button,Layout, Menu, Icon, Dropdown, Modal, Row, Col } from 'antd';
 import './home.css';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ButtonGroup from 'antd/lib/button/button-group';
@@ -49,7 +50,8 @@ class Home extends Component {
         this.handlerWindowMaximize = this.handlerWindowMaximize.bind(this);
         this.handlerWindowRestore = this.handlerWindowRestore.bind(this);
         this.state = {
-            collapsed:false
+            collapsed:false,
+            visible:false
         };
         this.MenuFile = this.MenuFile.bind(this);
         this.MenuHelp = this.MenuHelp.bind(this);
@@ -57,6 +59,15 @@ class Home extends Component {
         this.MenuSelection = this.MenuSelection.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
+    hide = () => {
+        this.setState({
+          visible: false,
+        });
+      };
+    
+      handleVisibleChange = visible => {
+        this.setState({ visible });
+    };
     onDragEnd(result) {
         
         if (!result.destination) {
@@ -206,7 +217,7 @@ class Home extends Component {
         
     }
     toggle() {
-        this.setState(state => ({ collapse: !state.collapse }));
+        this.setState(state => ({ collapsed: !state.collapsed }));
     }
     componentWillMount(){
         this.props.getArchetypes(false);
@@ -271,87 +282,91 @@ class Home extends Component {
                         </ButtonGroup>
                     </Row>
                 </Layout>
+                
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <div>
-                <Layout>
-                    <Sider collapsible onClick={this.toggle} style={{ minHeight: '100vh' }}>
-                        <Menu
-                            theme="dark"
-                            mode="inline"
-                        >
-                            <SubMenu
-                                key="cap1"
-                                title={
-                                    <span>
-                                        <Icon type="folder" />
-                                        <span>Arquetipos</span>
-                                    </span>
-                                }
-                            >
-                                <Menu.Item onClick={this.props.getArchetypes}>
-                                    <Icon type="reload" /> Actualizar Lista
-                                </Menu.Item>
-                                {
-                                    this.props.DBArchetypes.map((archetype, indx)=>(
-                                        <Menu.Item key={ indx } onClick={(e)=>{this.props.handlerDBArchetypeClick(e, this.props.DBArchetypes);}}>{archetype.archetype_id.value}</Menu.Item>
-                                    ))
-                                }
-                            </SubMenu>
-                            <SubMenu
-                                key="Blocks"
-                                title={
-                                <span>
-                                    <Icon type="block" />
-                                    <span>Bloques</span>
-                                </span>
-                                }
-                            >
-                                <Droppable droppableId="Lista0">
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                {this.props.sampleList.lista.map((item, index) => (
-                                                    <Draggable key={`list1-${item.id}`} draggableId={item.id} index={index}>
+                    
+                        <Layout >
+                            <Sider collapsible onClick={this.toggle} >   
+                                    <Scrollbar color="work">
+                                        <Menu
+                                            theme="dark"
+                                            mode="inline"
+                                        >
+                                            <SubMenu
+                                                key="cap1"
+                                                title={
+                                                    <span>
+                                                        <Icon type="folder" />
+                                                        <span>Arquetipos</span>
+                                                    </span>
+                                                }
+                                            >
+                                                <Menu.Item onClick={this.props.getArchetypes}>
+                                                    <Icon type="reload" /> Actualizar Lista
+                                                </Menu.Item>
+                                                {
+                                                    this.props.DBArchetypes.map((archetype, indx)=>(
+                                                        <Menu.Item key={ indx } onClick={(e)=>{this.props.handlerDBArchetypeClick(e, this.props.DBArchetypes);}}>{archetype.archetype_id.value}</Menu.Item>
+                                                    ))
+                                                }
+                                            </SubMenu>
+                                            <SubMenu
+                                                key="Blocks"
+                                                title={
+                                                <span>
+                                                    <Icon type="block" />
+                                                    <span>Bloques</span>
+                                                </span>
+                                                }
+                                            >
+                                                
+                                                    <Droppable droppableId="Lista0">
                                                         {(provided, snapshot) => (
                                                             <div
                                                                 ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                style={getItemStyle(
-                                                                    snapshot.isDragging,
-                                                                    provided.draggableProps.style
-                                                            )}>
-                                                                
-                                                                {item.content}
+                                                                style={getListStyle(snapshot.isDraggingOver)}>
+                                                                {this.props.sampleList.lista.map((item, index) => (
+                                                                    <Draggable key={`list1-${item.id}`} draggableId={item.id} index={index}>
+                                                                        {(provided, snapshot) => (
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                                style={getItemStyle(
+                                                                                    snapshot.isDragging,
+                                                                                    provided.draggableProps.style
+                                                                            )}>
+                                                                                
+                                                                                {item.content}
 
+                                                                            </div>
+                                                                        )}
+                                                                    </Draggable>
+                                                                ))}
+                                                                
+                                                                {provided.placeholder}
+                                                                
                                                             </div>
                                                         )}
-                                                    </Draggable>
-                                                ))}
-                                                
-                                                {provided.placeholder}
-                                                
-                                            </div>
-                                        )}
-                                    </Droppable>
-                            </SubMenu>
-                        </Menu>
-                    </Sider>
-                    <Layout>
-                        <Content>
-                            <Layout>
-                                    <FileManager>
-                                     
-                                    </FileManager>
+                                                    </Droppable>
+                                                 
+                                            </SubMenu>
+                                        </Menu>
+                                    </Scrollbar>     
+                            </Sider>
+                            <Layout >
+                                <Content className="Content">
+                                    <Layout >
+                                            <FileManager>
+                                            
+                                            </FileManager>
+                                    </Layout>
+                                </Content>
+                                <Footer style={{ textAlign: 'center'}}>
+                                    Archetypes ©2019 Created by WorkOrWate
+                                </Footer>
                             </Layout>
-                        </Content>
-                        <Footer style={{ textAlign: 'center' }}>
-                            Archetypes ©2019 Created by WorkOrWate
-                        </Footer>
-                    </Layout>
-                </Layout>
-                </div>
+                        </Layout>
                 </DragDropContext>
             </div>
         );

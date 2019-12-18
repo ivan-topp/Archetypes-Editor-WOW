@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { toggleFile, onEdit, changeName, removeFile, updateblocklist, udateAllBlockList } from '../actions/FileManager';
 import { toggleOpenFileDialog, handlerDownload, saveFile } from '../actions/home';
 import { feedBackMessage } from '../actions/others';
-import { Tabs, Icon, Typography, Modal, Row, Col,Layout, Tooltip } from 'antd';
+import { Tabs, Icon, Typography, Modal, Row, Col,Layout, Tooltip,Popover,Input, Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Scrollbar from './Scrollbar';
 import './FileManager.css';
 const { TabPane } = Tabs;
 const { Paragraph } = Typography;
@@ -43,6 +44,21 @@ const getListStyle = isDraggingOver => ({
     width: 190
 });
 class FileManager extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            visible:false
+        };
+    }
+    hide = () => {
+        this.setState({
+          visible: false,
+        });
+      };
+    
+    handleVisibleChange = visible => {
+        this.setState({ visible });
+    };
     onDragEnd(result) {
         
         if (!result.destination) {
@@ -149,168 +165,237 @@ class FileManager extends Component {
                                 </Paragraph>
                                 <Icon type="close" className="close" onClick={(e)=>{this.props.modalConfirm(e, this.props.currentFile, this.props.files, this.props.electron.ipcRenderer)}}/>
                             </div>} key={pane.key}>
-                            <Layout >
-                                    <Row type="flex" className="Fila" >
-                                        <Col span={8} type="flex" >
-                                            <Droppable droppableId={"Lista1" + this.props.currentFile}>
-                                                {(provided, snapshot) => (
-                                                    <div>
-                                                        <div >
-                                                            <h6>State</h6>
-                                                        </div>
-                                                        
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                                {
-                                                                    this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[0].lista.map((item, index) => (
-                                                                    
-                                                                    <Draggable key={`list2-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
-                                                                        
-                                                                        {(provided, snapshot) => (
-                                                                            <div>
-                                                                                <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                        )}
-                                                                    </Draggable>
-                                                                ))}
-                                                                
-                                                                {provided.placeholder}
-                                                            </div>
-                                                        
-                                                    </div>
-                                                )}
-                                            </Droppable>
-                                        </Col>
-                                        <Col span={8}>
-                                        
-                                        </Col>
-                                        <Col span={8} >
-                                            <Droppable droppableId={"Lista3" + this.props.currentFile}  >
-                                                {(provided, snapshot) => (
-                                                    
-                                                    <div>
-                                                        <div>
-                                                            <h6>Data</h6>
-                                                        </div>
-                                                        
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                                {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[2].lista.map((item, index) => (
-                                                                   
-                                                                    <Draggable key={`list4-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
-                                                                        {(provided, snapshot) => (
-                                                                            <div >
-                                                                                <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                        )}
-                                                                    </Draggable>
-                                                                    
-                                                                ))}
-                                                                
-                                                                {provided.placeholder}
-                                                            </div>
-                                                        
-                                                    </div>
-                                                )}
-                                            </Droppable>
-                                        </Col>
-                                    </Row>
-                                    
-                                    <Row type="flex" className="Fila" >
-                                        
-                                        <Col span={8} >
-                                        <Droppable  droppableId={"Lista2" + this.props.currentFile}  >
-                                                {(provided, snapshot) => (
-                                                    
-                                                    <div>
-                                                        <div>
-                                                            <h6>Protocol</h6>
-                                                        </div>
-                                                        
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                                {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[1].lista.map((item, index) => (
-                                                                    
-                                                                    <Draggable key={`list3-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
-                                                                        {(provided, snapshot) => (
-                                                                            <div>
-                                                                                <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                        )}
-                                                                    </Draggable>
-                                                                ))}
-                                                                
-                                                                {provided.placeholder}
-                                                            </div>
-                                                        
-                                                    </div>
-                                                )}
-                                            </Droppable>
-                                        </Col>
-                                        <Col span={8}>
-                                            <div className="title">
-                                                {
-                                                    this.props.getArchetypeName(this.props.files, this.props.currentFile)
-                                                }
-                                            </div>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Droppable  droppableId={"Lista5" + this.props.currentFile}  >
+                            <Scrollbar color="work">
+                                <Layout >
+                                        <Row type="flex" className="Fila" >
+                                            <Col span={8} type="flex" >
+                                                <Droppable droppableId={"Lista1" + this.props.currentFile}>
                                                     {(provided, snapshot) => (
-                                                        
-                                                        <div>
-                                                            <div>
-                                                                <h6>Description</h6>
+                                                        <div >
+                                                            <div >
+                                                                <h6>State</h6>
                                                             </div>
                                                             
                                                                 <div
                                                                     ref={provided.innerRef}
                                                                     style={getListStyle(snapshot.isDraggingOver)}>
-                                                                    {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[4].lista.map((item, index) => (
+                                                                    {
+                                                                        this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[0].lista.map((item, index) => (
                                                                         
-                                                                        <Draggable key={`list6-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                        <Draggable key={`list2-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                            
+                                                                            {(provided, snapshot) => (
+                                                                                <div>
+                                                                                    <Tooltip title={item.type}>
+                                                                                        <Popover
+                                                                                        content={
+                                                                                            <div>
+                                                                                                <Row>
+                                                                                                <Input size="small" defaultValue={item.content}  />
+                                                                                                </Row>
+                                                                                                <Row className="Save">
+                                                                                                <Button size="small" className="Save" onClick={this.hide}>Guardar</Button>
+                                                                                                </Row>
+                                                                                            </div>
+                                                                                        }
+                                                                                        title={
+                                                                                            <div>
+                                                                                                Editar
+                                                                                                <Button size="small"  type="danger" className="Cerrar" onClick={this.hide}>x</Button>
+                                                                                                
+                                                                                            </div>
+                                                                                        }
+                                                                                        trigger="click"
+                                                                                        visible={this.state.visible}
+                                                                                        onVisibleChange={this.handleVisibleChange}
+                                                                                        >
+                                                                                            <div className="bloque"
+                                                                                                ref={provided.innerRef}
+                                                                                                style={getItemStyle(
+                                                                                                    provided.draggableProps.style,
+                                                                                                    snapshot.isDragging
+                                                                                                )}
+                                                                                                {...provided.draggableProps}
+                                                                                                {...provided.dragHandleProps}
+                                                                                            >
+                                                                                                {item.content}
+                                                                                            </div>
+                                                                                            {provided.placeholder}
+                                                                                        </Popover>
+                                                                                    </Tooltip>
+                                                                                </div>
+                                                                            )}
+                                                                        </Draggable>
+                                                                    ))}
+                                                                    
+                                                                    {provided.placeholder}
+                                                                </div>
+                                                            
+                                                        </div>
+                                                    )}
+                                                </Droppable>
+                                            </Col>
+                                            <Col span={8}>
+                                                
+                                            </Col>
+                                            <Col span={8} >
+                                                <Droppable droppableId={"Lista3" + this.props.currentFile}  >
+                                                    {(provided, snapshot) => (
+                                                        
+                                                        <div>
+                                                            <div>
+                                                                <h6>Data</h6>
+                                                            </div>
+                                                            
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    style={getListStyle(snapshot.isDraggingOver)}>
+                                                                    {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[2].lista.map((item, index) => (
+                                                                    
+                                                                        <Draggable key={`list4-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                            {(provided, snapshot) => (
+                                                                                <div >
+                                                                                    <Tooltip title={item.type}>
+                                                                                        <div className="bloque"
+                                                                                            ref={provided.innerRef}
+                                                                                            style={getItemStyle(
+                                                                                                provided.draggableProps.style,
+                                                                                                snapshot.isDragging
+                                                                                            )}
+                                                                                            {...provided.draggableProps}
+                                                                                            {...provided.dragHandleProps}
+                                                                                        >
+                                                                                            {item.content}
+                                                                                        </div>
+                                                                                        {provided.placeholder}
+                                                                                    </Tooltip>
+                                                                                </div>
+                                                                            )}
+                                                                        </Draggable>
+                                                                        
+                                                                    ))}
+                                                                    
+                                                                    {provided.placeholder}
+                                                                </div>
+                                                            
+                                                        </div>
+                                                    )}
+                                                </Droppable>
+                                            </Col>
+                                        </Row>
+                                        
+                                        <Row type="flex" className="Fila" >
+                                            
+                                            <Col span={8} >
+                                            <Droppable  droppableId={"Lista2" + this.props.currentFile}  >
+                                                    {(provided, snapshot) => (
+                                                        
+                                                        <div >
+                                                            <div>
+                                                                <h6>Protocol</h6>
+                                                            </div>
+                                                            
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    style={getListStyle(snapshot.isDraggingOver)}>
+                                                                    {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[1].lista.map((item, index) => (
+                                                                        
+                                                                        <Draggable key={`list3-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                            {(provided, snapshot) => (
+                                                                                <div>
+                                                                                    <Tooltip title={item.type}>
+                                                                                        <div className="bloque"
+                                                                                            ref={provided.innerRef}
+                                                                                            style={getItemStyle(
+                                                                                                provided.draggableProps.style,
+                                                                                                snapshot.isDragging
+                                                                                            )}
+                                                                                            {...provided.draggableProps}
+                                                                                            {...provided.dragHandleProps}
+                                                                                        >
+                                                                                            {item.content}
+                                                                                        </div>
+                                                                                        {provided.placeholder}
+                                                                                    </Tooltip>
+                                                                                </div>
+                                                                            )}
+                                                                        </Draggable>
+                                                                    ))}
+                                                                    
+                                                                    {provided.placeholder}
+                                                                </div>
+                                                            
+                                                        </div>
+                                                    )}
+                                                </Droppable>
+                                            </Col>
+                                            <Col span={8}>
+                                                <div className="title">
+                                                    {
+                                                        this.props.getArchetypeName(this.props.files, this.props.currentFile)
+                                                    }
+                                                </div>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Droppable  droppableId={"Lista5" + this.props.currentFile}  >
+                                                        {(provided, snapshot) => (
+                                                            
+                                                            <div>
+                                                                <div>
+                                                                    <h6>Description</h6>
+                                                                </div>
+                                                                
+                                                                    <div
+                                                                        ref={provided.innerRef}
+                                                                        style={getListStyle(snapshot.isDraggingOver)}>
+                                                                        {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[4].lista.map((item, index) => (
+                                                                            
+                                                                            <Draggable key={`list6-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                                {(provided, snapshot) => (
+                                                                                    <div>
+                                                                                        <Tooltip title={item.type}>
+                                                                                        <div className="bloque"
+                                                                                            ref={provided.innerRef}
+                                                                                            style={getItemStyle(
+                                                                                                provided.draggableProps.style,
+                                                                                                snapshot.isDragging
+                                                                                            )}
+                                                                                            {...provided.draggableProps}
+                                                                                            {...provided.dragHandleProps}
+                                                                                        >
+                                                                                            {item.content}
+                                                                                        </div>
+                                                                                        {provided.placeholder}
+                                                                                        </Tooltip>
+                                                                                    </div>
+                                                                                )}
+                                                                            </Draggable>
+                                                                        ))}
+                                                                        
+                                                                        {provided.placeholder}
+                                                                    </div>
+                                                                
+                                                            </div>
+                                                        )}
+                                                    </Droppable>       
+                                                </Col>
+                                        </Row>
+                                        <Row type="flex" className="Fila">
+                                            <Col span={8} >
+                                                <Droppable  droppableId={"Lista4" + this.props.currentFile}  >
+                                                    {(provided, snapshot) => (
+                                                        
+                                                        <div>
+                                                            <div>
+                                                                <h6>Events</h6>
+                                                            </div>
+                                                            
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    style={getListStyle(snapshot.isDraggingOver)}>
+                                                                    {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[3].lista.map((item, index) => (
+                                                                        
+                                                                        <Draggable key={`list5-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
                                                                             {(provided, snapshot) => (
                                                                                 <div>
                                                                                     <Tooltip title={item.type}>
@@ -337,54 +422,9 @@ class FileManager extends Component {
                                                             
                                                         </div>
                                                     )}
-                                                </Droppable>       
+                                                </Droppable>                                       
                                             </Col>
-                                    </Row>
-                                    <Row type="flex" className="Fila">
-                                        <Col span={8} >
-                                            <Droppable  droppableId={"Lista4" + this.props.currentFile}  >
-                                                {(provided, snapshot) => (
-                                                    
-                                                    <div>
-                                                        <div>
-                                                            <h6>Events</h6>
-                                                        </div>
-                                                        
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                                {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[3].lista.map((item, index) => (
-                                                                    
-                                                                    <Draggable key={`list5-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
-                                                                        {(provided, snapshot) => (
-                                                                            <div>
-                                                                                <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                        )}
-                                                                    </Draggable>
-                                                                ))}
-                                                                
-                                                                {provided.placeholder}
-                                                            </div>
-                                                        
-                                                    </div>
-                                                )}
-                                            </Droppable>                                       
-                                        </Col>
-                                        <Col span={8} >
+                                            <Col span={8} >
                                             <Droppable  droppableId={"Lista7" + this.props.currentFile}  >
                                                 {(provided, snapshot) => (
                                                     
@@ -426,52 +466,52 @@ class FileManager extends Component {
                                                     </div>
                                                 )}
                                             </Droppable>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Droppable  droppableId={"Lista6" + this.props.currentFile}  >
-                                                {(provided, snapshot) => (
-                                                    
-                                                    <div>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Droppable  droppableId={"Lista6" + this.props.currentFile}  >
+                                                    {(provided, snapshot) => (
                                                         <div>
-                                                            <h6>Attribution</h6>
-                                                        </div>
-                                                        
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                                {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[5].lista.map((item, index) => (
-                                                                    
-                                                                    <Draggable key={`list7-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
-                                                                        {(provided, snapshot) => (
-                                                                            <div>
-                                                                                <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
-                                                                                </Tooltip>
-                                                                            </div>
-                                                                        )}
-                                                                    </Draggable>
-                                                                ))}
-                                                                
-                                                                {provided.placeholder}
+                                                            <div>
+                                                                <h6>Attribution</h6>
                                                             </div>
-                                                        
-                                                    </div>
-                                                )}
-                                            </Droppable>
-                                        </Col>
-                                    </Row>                                                  
-                                </Layout>
+                                                            
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    style={getListStyle(snapshot.isDraggingOver)}>
+                                                                    {this.props.files.filter(file=>file.key===this.props.currentFile)[0].allList[5].lista.map((item, index) => (
+                                                                        
+                                                                        <Draggable key={`list7-${item.id}-${this.props.currentFile}`} draggableId={item.id} index={index}>
+                                                                            {(provided, snapshot) => (
+                                                                                <div>
+                                                                                    <Tooltip title={item.type}>
+                                                                                    <div className="bloque"
+                                                                                        ref={provided.innerRef}
+                                                                                        style={getItemStyle(
+                                                                                            provided.draggableProps.style,
+                                                                                            snapshot.isDragging
+                                                                                        )}
+                                                                                        {...provided.draggableProps}
+                                                                                        {...provided.dragHandleProps}
+                                                                                    >
+                                                                                        {item.content}
+                                                                                    </div>
+                                                                                    {provided.placeholder}
+                                                                                    </Tooltip>
+                                                                                </div>
+                                                                            )}
+                                                                        </Draggable>
+                                                                    ))}
+                                                                    
+                                                                    {provided.placeholder}
+                                                                </div>
+                                                            
+                                                        </div>
+                                                    )}
+                                                </Droppable>
+                                            </Col>
+                                        </Row>                                                  
+                                    </Layout>
+                                </Scrollbar>
                         </TabPane>
                     ))}
                 </Tabs>

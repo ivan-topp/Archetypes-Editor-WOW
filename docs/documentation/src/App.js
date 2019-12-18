@@ -96,8 +96,7 @@ class App extends Component {
               trigger={null}
               collapsible 
               collapsed={this.state.collapsed} 
-              onCollapse= {this.toggleCollapsed}
-              className="side-panel">
+              onCollapse= {this.toggleCollapsed}>
               <div className="logo" />
               <Menu
                 defaultSelectedKeys={['1']} 

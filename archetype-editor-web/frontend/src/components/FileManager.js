@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toggleFile, onEdit, changeName, removeFile, updateblocklist, udateAllBlockList } from '../actions/FileManager';
 import { handlerDownload } from '../actions/home';
-import { Tabs, Icon, Typography, Modal, Row, Col,Layout, Tooltip } from 'antd';
+import { Tabs, Icon, Typography, Modal, Row, Col,Layout, Tooltip,Popover,Input,Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import './FileManager.css';
 import { parse } from 'querystring';
@@ -46,6 +46,7 @@ const getListStyle = isDraggingOver => ({
 });
 
 class FileManager extends Component {
+    
     onDragEnd(result) {
         
         if (!result.destination) {
@@ -153,18 +154,20 @@ class FileManager extends Component {
                                                                         {(provided, snapshot) => (
                                                                             <div>
                                                                                 <Tooltip title={item.type}>
-                                                                                <div className="bloque"
-                                                                                    ref={provided.innerRef}
-                                                                                    style={getItemStyle(
-                                                                                        provided.draggableProps.style,
-                                                                                        snapshot.isDragging
-                                                                                    )}
-                                                                                    {...provided.draggableProps}
-                                                                                    {...provided.dragHandleProps}
-                                                                                >
-                                                                                    {item.content}
-                                                                                </div>
-                                                                                {provided.placeholder}
+                                                                                    
+                                                                                            <div className="bloque"
+                                                                                                ref={provided.innerRef}
+                                                                                                style={getItemStyle(
+                                                                                                    provided.draggableProps.style,
+                                                                                                    snapshot.isDragging
+                                                                                                )}
+                                                                                                {...provided.draggableProps}
+                                                                                                {...provided.dragHandleProps}
+                                                                                            >
+                                                                                                {item.content}
+                                                                                            </div>
+                                                                                            {provided.placeholder}
+                                                                                    
                                                                                 </Tooltip>
                                                                             </div>
                                                                         )}

@@ -56,6 +56,7 @@ class Home extends Component {
         this.MenuSelection = this.MenuSelection.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
+    
     onDragEnd(result) {
         
         if (!result.destination) {
