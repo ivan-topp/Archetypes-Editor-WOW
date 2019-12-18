@@ -5,6 +5,7 @@ import { handlerDownload } from '../actions/home';
 import { Tabs, Icon, Typography, Modal, Row, Col,Layout, Tooltip,Popover,Input,Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import './FileManager.css';
+import Scrollbar from './Scrollbar';
 import { parse } from 'querystring';
 import './Home.css';
 const { TabPane } = Tabs;
@@ -132,8 +133,8 @@ class FileManager extends Component {
                                 </Paragraph>
                                 <Icon type="close" className="close" onClick={(e)=>{this.props.showConfirm(e, this.props.currentFile, this.props.files)}}/>
                             </div>} key={pane.key}>
-                            
-                            <Layout >
+                            <Scrollbar color="work">
+                                <Layout >
                                     <Row type="flex" className="Fila" >
                                         <Col span={8} type="flex" >
                                             <Droppable droppableId={"Lista1" + this.props.currentFile}>
@@ -458,6 +459,7 @@ class FileManager extends Component {
                                         </Col>
                                     </Row>                                                  
                                 </Layout>
+                            </Scrollbar>
                         </TabPane>
                     ))}
                 </Tabs>
