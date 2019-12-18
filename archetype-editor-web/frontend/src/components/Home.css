@@ -6,6 +6,9 @@
     margin-top:50px;
     margin-bottom:50px;
 }
-
+.scrollbar {
+    min-height: calc(100vh - 56px - 15px );
+    max-height: calc(100vh - 56px - 15px );
+}
 
 

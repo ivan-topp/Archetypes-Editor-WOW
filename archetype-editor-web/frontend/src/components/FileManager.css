@@ -25,3 +25,7 @@
     background-color: rgb(132, 172, 230);
     color:rgb(200, 213, 233);
 }
+.scrollbar {
+    min-height: calc(100vh - 56px - 15px - 38px - 8px - 15px - 50px );
+    max-height: calc(100vh - 50px - 15px - 38px - 8px - 15px - 50px );
+}
