@@ -45,7 +45,7 @@ const onEdit = (action) => {
                     },
                     lifecycle_state: " ",
                     original_author: [],
-                    other_contribuitors: [],
+                    other_contributors: [],
                     other_details: []
                 },
                 is_controlled: " ",
@@ -112,4 +112,10 @@ const updateblocklist = (blocklist) =>{
         blocklist
     }
 }
-export { toggleFile, onEdit, changeName, removeFile, updateblocklist };
+const udateAllBlockList = (blocklist) =>{
+    return {
+        type: 'udateAllBlockList', 
+        blocklist
+    }
+}
+export { toggleFile, onEdit, changeName, removeFile, updateblocklist, udateAllBlockList };

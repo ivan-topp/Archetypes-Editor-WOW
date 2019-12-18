@@ -7,7 +7,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import './FileManager.css';
 import { parse } from 'querystring';
 import './Home.css';
-import { PassThrough } from 'stream';
 const { TabPane } = Tabs;
 const { Paragraph } = Typography;
 const { confirm } = Modal;

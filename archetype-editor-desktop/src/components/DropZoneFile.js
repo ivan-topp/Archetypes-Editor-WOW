@@ -6,28 +6,48 @@ import { feedBackMessage } from '../actions/others';
 import { Icon } from 'antd';
 import './DropZoneFile.css';
 
+
 function xml2json(xml) {
   try {
     var obj = {};
+    
     if (xml.children.length > 0) {
       for (var i = 0; i < xml.children.length; i++) {
         var item = xml.children.item(i);
         var nodeName = item.nodeName;
 
         if (typeof (obj[nodeName]) == "undefined") {
-          obj[nodeName] = xml2json(item);
+
+          if(item.attributes.code){
+            obj[nodeName] = {code: item.attributes.code.value, items: xml2json(item)};
+          }else if(item.attributes.language){
+            obj[nodeName] = {language: item.attributes.language.value, items: xml2json(item)};
+          }else{
+            obj[nodeName] = xml2json(item);
+          }
         } else {
           if (typeof (obj[nodeName].push) == "undefined") {
             var old = obj[nodeName];
-
             obj[nodeName] = [];
             obj[nodeName].push(old);
           }
-          obj[nodeName].push(xml2json(item));
+            if(item.attributes.code){
+              obj[nodeName].push({code: item.attributes.code.value, items: xml2json(item)});
+            }else if(item.attributes.language){
+              obj[nodeName].push({language: item.attributes.language.value, items: xml2json(item)});
+            }else{
+              obj[nodeName].push(xml2json(item));
+            }
         }
       }
     } else {
-      obj = xml.textContent;
+      
+      if(xml.attributes.id){
+        obj.value = xml.textContent;
+        obj.id = xml.attributes.id.value;
+      }else{
+        obj= xml.textContent;
+      }
     }
     return obj;
   } catch (e) {
@@ -172,7 +192,7 @@ const mapDispatchToProps = dispatch => {
                             },
                             lifecycle_state: " ",
                             original_author: [],
-                            other_contribuitors: [],
+                            other_contributors: [],
                             other_details: []
                         },
                         is_controlled: " ",
@@ -198,7 +218,8 @@ const mapDispatchToProps = dispatch => {
                         {id:"Lista3",lista:[],type:"Data"},
                         {id:"Lista4",lista:[],type:"Events"},
                         {id:"Lista5",lista:[],type:"Description"},
-                        {id:"Lista6",lista:[],type:"Atributtion"}
+                        {id:"Lista6",lista:[],type:"Atributtion"},
+                        {id:"Lista7",lista:[],type:"Items"}
                       ]};
                       nFile.key = (newTabIndex + 1).toString();
                       nFile.allList.forEach((list)=>{
