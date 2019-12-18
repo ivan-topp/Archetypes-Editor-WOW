@@ -41,7 +41,7 @@ const getListStyle = isDraggingOver => ({
     borderBottomRightRadius: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 30,
-    width: 190
+    width: 230
 });
 class FileManager extends Component {
     constructor(props){

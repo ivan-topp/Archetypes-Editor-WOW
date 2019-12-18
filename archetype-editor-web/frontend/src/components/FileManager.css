@@ -6,15 +6,16 @@
     display: inline;
 }
 .tab-content{
-    height: 100vh;
     background-color: rgb(241, 242, 246);
 }
 .file-manager{
     background-color: white;
+    width: 70;
+    height: 70;
 }
 .bloque{
     padding: 15px;
-    width: 170px;
+    width: 210px;
     margin-left: 10px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 10px;
@@ -27,7 +28,7 @@
 }
 .title{
     padding: 15px;
-    width: 170px;
+    width: 210px;
     margin-left: 10px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 10px;
@@ -37,4 +38,23 @@
     border-color:rgb(200, 213, 233);
     background-color: rgb(132, 172, 230);
     color:rgb(200, 213, 233);
+}
+.workspace{
+    background-color:red;
+}
+.Fila{
+    margin-left:50px;
+    margin-top:50px;
+    margin-bottom:50px;
+}
+.scrollbar {
+    min-height: calc(100vh - 56px - 15px - 38px - 8px - 15px - 50px );
+    max-height: calc(100vh - 50px - 15px - 38px - 8px - 15px - 50px );
+}
+.Save{
+    bottom: -3px;
+    left: 50px;
+}
+.Cerrar{
+    left: 108px;
 }
