@@ -1,0 +1,77 @@
+.scrollbar {
+    overflow: auto;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background-color: rgb(253, 253, 253);
+}
+
+.scrollbar[color="blue"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:blue;
+}
+
+.scrollbar[color="indigo"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: indigo;
+}
+
+.scrollbar[color="purple"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:purple;
+}
+
+.scrollbar[color="pink"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--pink);
+}
+
+.scrollbar[color="red"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:red;
+}
+
+.scrollbar[color="orange"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:orange;
+}
+
+.scrollbar[color="yellow"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:yellow;
+}
+
+.scrollbar[color="green"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:green;
+}
+
+.scrollbar[color="teal"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:teal;
+}
+
+.scrollbar[color="cyan"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:cyan;
+}
+
+.scrollbar[color="white"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:white;
+}
+
+.scrollbar[color="gray"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:gray;
+}
+
+.scrollbar[color="work"]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgb(0, 21, 42);
+}
+
+
