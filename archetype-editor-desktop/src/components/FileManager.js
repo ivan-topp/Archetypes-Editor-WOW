@@ -50,7 +50,7 @@ class FileManager extends Component {
             visible:false
         };
     }
-    hide = () => {
+    /*hide = () => {
         this.setState({
           visible: false,
         });
@@ -58,7 +58,7 @@ class FileManager extends Component {
     
     handleVisibleChange = visible => {
         this.setState({ visible });
-    };
+    };*/
     onDragEnd(result) {
         
         if (!result.destination) {
@@ -187,28 +187,6 @@ class FileManager extends Component {
                                                                             {(provided, snapshot) => (
                                                                                 <div>
                                                                                     <Tooltip title={item.type}>
-                                                                                        <Popover
-                                                                                        content={
-                                                                                            <div>
-                                                                                                <Row>
-                                                                                                <Input size="small" defaultValue={item.content}  />
-                                                                                                </Row>
-                                                                                                <Row className="Save">
-                                                                                                <Button size="small" className="Save" onClick={this.hide}>Guardar</Button>
-                                                                                                </Row>
-                                                                                            </div>
-                                                                                        }
-                                                                                        title={
-                                                                                            <div>
-                                                                                                Editar
-                                                                                                <Button size="small"  type="danger" className="Cerrar" onClick={this.hide}>x</Button>
-                                                                                                
-                                                                                            </div>
-                                                                                        }
-                                                                                        trigger="click"
-                                                                                        visible={this.state.visible}
-                                                                                        onVisibleChange={this.handleVisibleChange}
-                                                                                        >
                                                                                             <div className="bloque"
                                                                                                 ref={provided.innerRef}
                                                                                                 style={getItemStyle(
@@ -221,7 +199,6 @@ class FileManager extends Component {
                                                                                                 {item.content}
                                                                                             </div>
                                                                                             {provided.placeholder}
-                                                                                        </Popover>
                                                                                     </Tooltip>
                                                                                 </div>
                                                                             )}
