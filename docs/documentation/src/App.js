@@ -4,8 +4,11 @@ import { InfraestructuraWeb } from './sections/InfraestructuraWeb';
 import { InfraestructuraDesktop } from './sections/InfrestructuraDesktop';
 import { Comenzando } from './sections/Comenzando';
 import { AdministradorDeArchivos } from './sections/FileManager';
+import { AdministradorDeArchivos2 } from './sections/FileManager2';
 import { DropZoneFile } from './sections/DropZoneFile';
+import { DropZoneFile2 } from './sections/DropZoneFile2';
 import { Homepage } from './sections/Homepage';
+import { Homepage2 } from './sections/Homepage2';
 import { Appini } from './sections/Appini';
 import './App.css';
 import 'antd/dist/antd.css';
@@ -51,13 +54,21 @@ class App extends Component {
       this.setState({
         content: AdministradorDeArchivos
       });
+    }else if (event.item.props.children === "Administrar Archivos") {
+      this.setState({
+        content: AdministradorDeArchivos2
+      });
     }  else if (event.item.props.children === "Cargador de archivos") {
       this.setState({
         content: DropZoneFile
       });
-    } else if (event.item.props.children === "Homepage"){
+    }else if (event.item.props.children === "Carga de archivos") {
       this.setState({
-        content: Homepage
+        content: DropZoneFile2
+      });
+    } else if (event.item.props.children === "Pagina Principal"){
+      this.setState({
+        content: Homepage2
       });
     }else if (event.item.props.children === "App"){
       this.setState({
@@ -116,6 +127,11 @@ class App extends Component {
                   <Menu.Item key="6" onClick={this.toggleContent}>Cargador de archivos</Menu.Item>
                   <Menu.Item key="7" onClick={this.toggleContent}>Homepage</Menu.Item>
                   <Menu.Item key="8" onClick={this.toggleContent}>App</Menu.Item>
+                </SubMenu>
+                <SubMenu key="sub3" title={<span><Icon type="mail" /><span>Acciones</span></span>}>
+                  <Menu.Item key="9" onClick={this.toggleContent}>Administrar Archivos</Menu.Item>
+                  <Menu.Item key="10" onClick={this.toggleContent}>Carga de archivos</Menu.Item>
+                  <Menu.Item key="11" onClick={this.toggleContent}>Pagina Principal</Menu.Item>
                 </SubMenu>
               </Menu>
             </Sider>
