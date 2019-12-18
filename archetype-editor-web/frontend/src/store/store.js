@@ -46,7 +46,7 @@ const initialState = {
                 },
                 lifecycle_state: " ",
                 original_author: [],
-                other_contribuitors: [],
+                other_contributors: [],
                 other_details: []
             },
             is_controlled: " ",
@@ -72,7 +72,8 @@ const initialState = {
             {id:"Lista30",lista:[],type:"Data"},
             {id:"Lista40",lista:[],type:"Events"},
             {id:"Lista50",lista:[],type:"Description"},
-            {id:"Lista60",lista:[],type:"Atributtion"}
+            {id:"Lista60",lista:[],type:"Atributtion"},
+            {id:"Lista70",lista:[],type:"Items"}
     
         ]},
     ],
@@ -234,6 +235,13 @@ const reducer = (state, action) => {
                 items2: action.blocklist
             }
         }*/
+    } else if(action.type === 'udateAllBlockList'){
+        let {files}=state;
+        files.filter(file=>file.key===state.currentFile)[0].allList = action.blocklist;
+        return{
+            ...state,
+            files
+        }
     }
     
     return state;

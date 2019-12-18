@@ -19,10 +19,15 @@ export const InfraestructuraDesktop = {
             </SyntaxHighlighter>            
             <Title level={2}>El directorio "public"</Title>
             <p>En este directorio se encuentra el archivo index.html que se monta en la aplicación electron si es que se está en modo producción y el archivo "electron.js", que es el clásico "main.js" de electron, es decir, el código que define la aplicación electron.</p>
-            <Title level={3}>El directorio "src"</Title>
-            <p>En este directorio se encuentran los componentes, el store, y las actions correspondientes para el uso de react-redux.</p>
+            <Title level={3}>El archivo "electron.js"</Title>
+            <p>En este archivo se encuentra el codigo de todas las instrucciones basicas que se dan al trabajar el html de la aplicacion (maximizar, minimizar, cerrar, etc). </p>
             <Title level={3}>El archivo "index.html"</Title>
             <p>En este archivo se encuentra el código html principal en donde se monta la aplicación react.</p>
+            <Title level={2}>El directorio "src"</Title>
+            <p>En este directorio se encuentran los componentes, el store, y las actions correspondientes para el uso de react-redux.</p>
+            <Title level={2}>El directorio "src"</Title>
+            <p>En este directorio se encuentran los componentes, el store, y las actions correspondientes para el uso de react-redux.</p>
+            
         </div>
         )
 }

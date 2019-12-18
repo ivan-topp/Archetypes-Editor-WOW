@@ -43,7 +43,8 @@ const openDbArchetype = (archetype) => {
             {id:"Lista3",lista:[],type:"Data"},
             {id:"Lista4",lista:[],type:"Events"},
             {id:"Lista5",lista:[],type:"Description"},
-            {id:"Lista6",lista:[],type:"Atributtion"}
+            {id:"Lista6",lista:[],type:"Atributtion"},
+            {id:"Lista7",lista:[],type:"Items"}
     
         ]};
     } else {
@@ -64,8 +65,8 @@ const openDbArchetype = (archetype) => {
             {id:"Lista3",lista:[],type:"Data"},
             {id:"Lista4",lista:[],type:"Events"},
             {id:"Lista5",lista:[],type:"Description"},
-            {id:"Lista6",lista:[],type:"Atributtion"}
-    
+            {id:"Lista6",lista:[],type:"Atributtion"},
+            {id:"Lista7",lista:[],type:"Items"}
         ]};
     }
 

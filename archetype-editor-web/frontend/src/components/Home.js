@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { changeTitle, toggleOpenFileDialog, handlerDownload, openDbArchetype } from '../actions/home';
 import { onEdit, updateblocklist } from '../actions/FileManager';
 import FileManager from './FileManager';
+import Scrollbar from './Scrollbar';
 import DropZone from './DropZoneFile';
 import { Button,Layout, Menu, Icon, Dropdown, Modal, Row, message } from 'antd';
 import './Home.css';
@@ -56,6 +57,7 @@ class Home extends Component {
         this.MenuSelection = this.MenuSelection.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
+    
     onDragEnd(result) {
         
         if (!result.destination) {
@@ -166,7 +168,7 @@ class Home extends Component {
         this.setState(state => ({ collapse: !state.collapse }));
     }
     componentWillMount(){
-        this.props.getArchetypes();
+        this.props.getArchetypes(false);
     }
     render(){
         return (
@@ -209,69 +211,71 @@ class Home extends Component {
                     <div>
                     <Layout>
                         <Sider collapsible onClick={this.toggle} style={{ minHeight: '100vh' }}>
-                            <Menu
-                                theme="dark"
-                                mode="inline"
-                            >
-                                <SubMenu
-                                        key="cap2"
+                            <Scrollbar color="work">
+                                <Menu
+                                    theme="dark"
+                                    mode="inline"
+                                >
+                                    <SubMenu
+                                            key="cap2"
+                                            title={
+                                            <span>
+                                                <Icon type="folder" />
+                                                <span>Arquetipos</span>
+                                            </span>
+                                        }
+                                    >
+                                        <Menu.Item onClick={this.props.getArchetypes}>
+                                            <Icon type="reload" /> Actualizar Lista
+                                        </Menu.Item>
+                                        {
+                                            this.props.DBArchetypes.map((archetype, indx)=>(
+                                                <Menu.Item key={ indx } onClick={(e)=>{this.props.handlerDBArchetypeClick(e, this.props.DBArchetypes);}}>{archetype.archetype_id.value}</Menu.Item>
+                                            ))
+                                        }
+                                    </SubMenu>
+                                    <SubMenu
+                                        key="Blocks"
                                         title={
                                         <span>
-                                            <Icon type="folder" />
-                                            <span>Arquetipos</span>
+                                            <Icon type="block" />
+                                            <span>Bloques</span>
                                         </span>
-                                    }
-                                >
-                                    <Menu.Item onClick={this.props.getArchetypes}>
-                                        <Icon type="reload" /> Actualizar Lista
-                                    </Menu.Item>
-                                    {
-                                        this.props.DBArchetypes.map((archetype, indx)=>(
-                                            <Menu.Item key={ indx } onClick={(e)=>{this.props.handlerDBArchetypeClick(e, this.props.DBArchetypes);}}>{archetype.archetype_id.value}</Menu.Item>
-                                        ))
-                                    }
-                                </SubMenu>
-                                <SubMenu
-                                    key="Blocks"
-                                    title={
-                                    <span>
-                                        <Icon type="block" />
-                                        <span>Bloques</span>
-                                    </span>
-                                    }
-                                >
-                                    <Droppable droppableId="Lista0">
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                style={getListStyle(snapshot.isDraggingOver)}>
-                                                {this.props.sampleList.lista.map((item, index) => (
-                                                    <Draggable key={`list1-${item.id}`} draggableId={item.id} index={index}>
-                                                        {(provided, snapshot) => (
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                style={getItemStyle(
-                                                                    snapshot.isDragging,
-                                                                    provided.draggableProps.style
-                                                            )}>
-                                                                
-                                                                {item.content}
+                                        }
+                                    >
+                                        <Droppable droppableId="Lista0">
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    style={getListStyle(snapshot.isDraggingOver)}>
+                                                    {this.props.sampleList.lista.map((item, index) => (
+                                                        <Draggable key={`list1-${item.id}`} draggableId={item.id} index={index}>
+                                                            {(provided, snapshot) => (
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    style={getItemStyle(
+                                                                        snapshot.isDragging,
+                                                                        provided.draggableProps.style
+                                                                )}>
+                                                                    
+                                                                    {item.content}
 
-                                                            </div>
-                                                        )}
-                                                    </Draggable>
-                                                ))}
-                                                
-                                                {provided.placeholder}
-                                                
-                                            </div>
-                                        )}
-                                    </Droppable>
-                                    
-                                </SubMenu>
-                            </Menu>
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                    ))}
+                                                    
+                                                    {provided.placeholder}
+                                                    
+                                                </div>
+                                            )}
+                                        </Droppable>
+                                        
+                                    </SubMenu>
+                                </Menu>
+                            </Scrollbar>
                         </Sider>
                         <Layout>
                             <Content>
@@ -404,7 +408,7 @@ const mapDispatchToProps = dispatch => {
                 
             });
         },
-        getArchetypes(){
+        getArchetypes(feedback=true){
             if(navigator.onLine){
                 return axios.get('http://localhost:4000/api/archetype/', {
                     headers: {'Access-Control-Allow-Origin': '*'}
@@ -416,8 +420,9 @@ const mapDispatchToProps = dispatch => {
                     });
                 })
                 .catch(e => {
-                    feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar contactar al servidor, comprueba tu conexión a internet."});
-                    console.log(e);
+                    if(feedback){
+                        feedBackMessage({ type: "error", msg: "Ha ocurrido un error al intentar contactar al servidor, comprueba tu conexión a internet."});
+                    }
                 });
             } else {
                 feedBackMessage({ type: "error", msg: "Al parecer no tienes conexión a internet."});
